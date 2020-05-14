@@ -1,0 +1,68 @@
+##tlayout("shop/layout.htm"){
+
+<!-- 富文本编辑器所需css和js -->
+<link rel="stylesheet" href="/shop/script/kindeditor/themes/default/default.css" />
+<script charset="utf-8" src="/shop/script/kindeditor/kindeditor-all-min.js"></script>
+<script charset="utf-8" src="/shop/script/kindeditor/lang/zh_CN.js"></script>
+
+<div class="breadcrumbs">
+	<div class="col-xs-12 breadcrumbs_title">编辑公告</div>
+</div>
+<div class="page-content" style="margin-top: 50px;">
+	<div class="row">
+		<div class="col-xs-12">
+			<form action="/shop/notice/update" method="post" class="form-horizontal" id="submit_form">
+				<div class="form-group">
+					<label class="col-xs-2 control-label"><span style="color: #f00">*</span>标题</label>
+					<div class="col-xs-10">
+						<input class="col-xs-8" type="text" name="title" value="${notice.title!}"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-2 control-label"><span style="color: #f00">*</span>详细内容</label>
+					<div class="col-xs-10">
+						<textarea class="form-control textarea_editor" name="content">${notice.content!}</textarea>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-2 control-label"></label>
+					<div class="col-xs-10">
+						<button class="btn btn-info" type="button" onclick="submitForm()"><i class="icon-ok bigger-110"></i>确定</button>
+						<button class="btn" type="button" onclick="javascript:history.back(-1)" style="margin-left: 25px;"><i class="icon-undo bigger-110"></i>取消</button>
+					</div>
+				</div>
+				<input type="hidden" name="id" value="${notice.id!}" />
+			</form>
+		</div>
+	</div>
+</div>
+<script>
+var editor;
+KindEditor.ready(function(K) {
+	editor = K.create('textarea[name="content"]', {
+		allowFileManager : true,
+		items : [
+					'source', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+					'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+					'insertunorderedlist', '|', 'emoticons','image', 'link', 'unlink', 'table', 'lineheight'],
+		thremType:'simple',
+		width:'80%',
+		height:'500px',
+		basePath:'/shop/script/kindeditor/',
+		uploadJson : '/shop/editorUploadImg',
+	});
+});
+function submitForm(){
+	
+	editor.sync();
+	$('#submit_form').ajaxSubmit({
+	    success: function(data){
+	    	alert(data.msg);
+	     	if(data.success){
+	     		window.location.href="/shop/notice";
+	     	}
+	    } 
+	 });
+}
+</script>
+##}

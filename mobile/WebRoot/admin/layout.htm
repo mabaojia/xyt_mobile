@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>${_common.baseTitle()}管理端</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link href="/admin/assets/css/bootstrap.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="/admin/assets/css/font-awesome.min.css" />
+	<link rel="stylesheet" href="/admin/assets/css/ace.min.css" />
+	<link rel="stylesheet" href="/admin/assets/css/ace-rtl.min.css" />
+	<link rel="stylesheet" href="/admin/assets/css/ace-skins.min.css" />
+	<link rel="stylesheet" href="/admin/css/style.css" />
+	<link rel="stylesheet" href="/admin/css/icon.css"/>
+	<script src="/admin/assets/js/ace-extra.min.js"></script>
+	<script src="/admin/script/jquery.min.js"></script>
+	<script src="/admin/script/jquery.form.js"></script>
+	<script src="/admin/assets/js/bootstrap.min.js"></script>
+	<script src="/admin/assets/js/typeahead-bs2.min.js"></script>
+	<script src="/admin/assets/js/ace-elements.min.js"></script>
+	<script src="/admin/assets/js/ace.min.js"></script>
+	<style type="text/css">
+	.breadcrumbs{
+		padding-left:10px;
+		padding-top:10px;
+		height: 50px;
+	}
+	.breadcrumbs div{
+		height: 30px;
+		line-height: 30px;
+	}
+	.breadcrumbs select{
+		height: 35px;
+		line-height: 35px;
+		vertical-align: top;
+		width: 150px;
+	}
+	</style>
+</head>
+<body>
+	<div class="navbar navbar-default" id="navbar">
+		<div class="navbar-container" id="navbar-container">
+			<div class="navbar-header pull-left">
+				<a href="/admin/dashboard" class="navbar-brand"><small><i class="icon-home"></i><span style="margin-left: 10px;">${_common.baseTitle()}管理端</span></small></a>
+			</div>
+			<div class="navbar-header pull-right" role="navigation">
+				<ul class="nav ace-nav">
+					<li class="light-blue">
+						<a href="/admin/layout" class="dropdown-toggle">退出</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="main-container" id="main-container">
+		<div class="main-container-inner">
+			<a class="menu-toggler" id="menu-toggler" href="javascript:void(0)">
+				<span class="menu-text"></span>
+			</a>
+			<div class="sidebar" id="sidebar">
+				<ul class="nav nav-list">
+					<li style="margin-bottom: 5px;">
+						<a href="/admin/dashboard">
+							<i class="icon-time"></i>
+							<span class="menu-text">
+								数据统计
+							</span>
+						</a>
+					</li>
+					##for(_menu in session.menus){
+						<li style="margin-bottom: 5px;">
+							<a href="${_menu.url!}">
+								<i class="${_menu.icon!}"></i>
+								<span class="menu-text">
+									${_menu.title!}
+								</span>
+							</a>
+						</li>
+					##}
+					##if(admin.type==1){
+						<li style="margin-bottom: 5px;">
+							<a href="/admin/root">
+								<i class="icon-home"></i>
+								<span class="menu-text">
+									超级管理
+								</span>
+							</a>
+						</li>
+					##}
+					<li style="margin-bottom: 5px;">
+						<a href="javascript:showAlert('/admin/system/editPwd')">
+							<i class="icon-key"></i>
+							<span class="menu-text">
+								账户安全
+							</span>
+						</a>
+					</li>
+				</ul>
+			</div>
+			<div class="main-content">
+				${layoutContent}
+			</div>
+		</div>
+		<a href="javascript:void(0)" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse" style="position: fixed;">
+			<i class="icon-double-angle-up icon-only bigger-110"></i>
+		</a>
+	</div>
+	<div class="tanchu_bg" id="tanchu_bg">
+		<iframe id="tanchu_ifream" src="/admin/blank" scrolling="no" allowtransparency="true"></iframe>
+	</div>
+<script>
+$(document).ready(function(){
+	
+	$("#sidebar").find("a").each(function(){
+		if($(this).attr("href")=="${url!}" || $(this).attr("href")=="${url_1!}"){
+			$(this).parent().addClass("active");
+		}
+	});
+	if("${url_1!}"=="/admin/type"){
+		$("#sidebar").find("a").each(function(){
+			if($(this).attr("href")=="${url_1!}?type=${type!}"){
+				$(this).parent().addClass("active");
+			}
+		});
+	}
+	if("${url_1!}"=="/admin/brand"){
+		$("#sidebar").find("a").each(function(){
+			if($(this).attr("href")=="/admin/brand?type=${type!}"){
+				$(this).parent().addClass("active");
+			}
+		});
+	}
+	if("${url_1!}"=="/admin/brand/store"){
+		$("#sidebar").find("a").each(function(){
+			if($(this).attr("href")=="/admin/brand/store?type=${type!}"){
+				$(this).parent().addClass("active");
+			}
+		});
+	}
+	if("${url_1!}"=="/admin/material" || ("${url_1!}"=="/admin/type" && "${type!}"==1) || "${url_1!}"=="/admin/material/store"){
+		$("#sidebar").find("a").each(function(){
+			if($(this).attr("href")=="/admin/material"){
+				$(this).parent().addClass("active");
+			}
+		});
+	}
+	if("${url_1!}"=="/admin/background" || ("${url_1!}"=="/admin/type" && "${type!}"==2) || "${url_1!}"=="/admin/background/store"){
+		$("#sidebar").find("a").each(function(){
+			if($(this).attr("href")=="/admin/background"){
+				$(this).parent().addClass("active");
+			}
+		});
+	}
+	if("${url_1!}"=="/admin/mask" || ("${url_1!}"=="/admin/type" && "${type!}"==5) || "${url_1!}"=="/admin/mask/store"){
+		$("#sidebar").find("a").each(function(){
+			if($(this).attr("href")=="/admin/mask"){
+				$(this).parent().addClass("active");
+			}
+		});
+	}
+});
+function hideAlert(){
+	
+	$("#tanchu_bg").hide();
+	$("#tanchu_ifream").attr("src","/admin/blank");
+}
+function showAlert(url){
+	
+	$("#tanchu_ifream").attr("src",url);
+	$("#tanchu_bg").show();
+}
+//键盘回车事件
+document.onkeydown=function(event){
+	if(event.keyCode==13){
+		return false;
+    }
+}
+</script>
+</body>
+</html>

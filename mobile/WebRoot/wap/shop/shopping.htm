@@ -1,0 +1,148 @@
+##tlayout("wap/layout.htm",{head_title:"购物车"}){
+
+##if(goods_list!=null && goods_list.~size!=0){
+	<div class="page">
+	    <div class="shop-cart">
+	        <div class="shop">
+	            <div class="title">
+	            	<i class="icon-shop"></i>
+                    <span class="shop-name">购物车</span>
+	                <span class="edit" onclick="changeEdit(this);">编辑</span>
+	            </div>
+	            <div class="goods-list">
+	                ##for(_item in goods_list!){
+                	<div class="goods" data-id='${_item.id!}'>
+	                    <div class="van-cell-swipe">
+	                        <div class="van-cell-swipe__wrapper">
+	                            <div class="goods-card" style="margin-left: 20px;">
+	                                <div class="goods-img-wrap">
+	                                	##if(_item.diy_id!=null && _item.diy_id!=""){
+	                                		<a href="/wap/goods?code=${_item.goods.code!}&dcode=${_item.diy.code!}"><img class="goods-img" src="${_item.diy.img_url!}" /></a>
+	                                	##}else{
+	                                		<a href="/wap/goods?code=${_item.goods.code!}"><img class="goods-img" src="${_item.goods.img_url!}" /></a>
+	                                	##}
+	                                </div>
+	                                <div class="desc-wrap">
+	                                    <div class="goods_number_wrap">
+	                                        <div class="goods_number_content">
+	                                          <span class="reduce" data-key="reduce" onclick="reduce(event, this)" id="${_item.id!}">-</span>
+	                                          <span class="number">${_item.number!}</span>
+	                                          <span class="add" data-key="add" onclick="add(event, this)" id="${_item.id!}">+</span>
+	                                        </div>
+	                                    </div>
+	                                    ##if(_item.diy_id!=null && _item.diy_id!=""){
+	                                		<div class="goods-name"><a href="/wap/goods?code=${_item.goods.code!}&dcode=${_item.diy.code!}">${_item.goods.title!}</a></div>
+	                                	##}else{
+	                                		<div class="goods-name"><a href="/wap/goods?code=${_item.goods.code!}">${_item.goods.title!}</a></div>
+	                                	##}
+	                                    <div class="sku-str">
+	                                    	【${_item.title!}】
+	                                    	##if(_item.diy_id!=null && _item.diy_id!=""){
+	                                    		【定制商品】
+	                                    	##}
+	                                    	##if(_item.goods.source==1 || _item.goods.source==2){
+	                                    		【${_item.parent.title!}->${_item.brand.title!}】
+	                                    	##}
+	                                    </div> 
+	                                    <div class="goods-price">¥ ${_item.price!}</div> 
+	                                    <span class="num">* ${_item.number!}</span> 
+	                                </div>
+	                            </div>
+	                            <div class="delete-btn" onclick="delGoods(event,this)" id="${_item.id!}"><span>删除</span></div>
+	                        </div>
+	                    </div>
+	                </div>
+	                ##}
+	            </div>
+	        </div>
+	    </div>
+	</div>
+	<div style="height:50px;"></div>
+	<div class="cart-bottom ">
+	    <div class="left">
+	        <div class="one">合计：￥${subtotal!}</div>
+	    </div>
+	    <div class="right">
+	        <a href="/wap/shop/address" class="bottom-button bottom-button-active">结算</a>
+	    </div>
+	</div>
+##}else{
+	<div class="page">
+	    <div class="empty-list">
+	        <h2>购物车快饿瘪了T.T</h2>
+	        <div class="desc">快给我挑点宝贝</div>
+	        <div class="go-homepage-btn">
+	            <a href="/wap/list">去逛逛</a>
+	        </div>
+	    </div>
+	</div>
+##}
+<div style="height: 50px;"></div>
+<#_wapMenu  />
+<script>
+var editFlage = 0;
+function changeEdit(obj) {
+   	
+     if(editFlage==0){
+         $(".goods_number_wrap").show();
+         $(".goods-name").hide();
+         $(".delete-btn").show();
+         $(obj).text('完成');
+         editFlage = 1;
+     }else{
+         $(".goods_number_wrap").hide();
+         $(".goods-name").show();
+         $(".delete-btn").hide();
+         $(obj).text('编辑');
+         editFlage = 0;
+         location.reload();
+     }
+}
+function add(event,obj){
+
+	var number = parseFloat($(obj).prev().text()) + 1;
+	$.post("/wap/shop/changeNumber", {id:$(obj).attr("id"), number:number},function(data){
+		if(data.success){
+			$(obj).prev().text(number);
+		}else{
+			alert(data.msg);
+		}
+	});
+	if(event && event.stopPropagation){
+		event.stopPropagation();
+	}
+}
+function reduce(event,obj){
+
+	var number = parseFloat($(obj).next().text());
+	if (number > 1) {
+		number = number - 1;
+    } else {
+    	number = 1;
+    }
+	$.post("/wap/shop/changeNumber", {id:$(obj).attr("id"), number:number},function(data){
+		if(data.success){
+			$(obj).next().text(number);
+		}else{
+			alert(data.msg);
+		}
+	});
+	if(event && event.stopPropagation){
+		event.stopPropagation();
+	}
+}
+function delGoods(event,obj){
+  
+	$.post("/wap/shop/deleteItem", {id:$(obj).attr("id")},function(data){
+		if(data.success){
+			$(obj).parent().parent().parent().remove();
+		}else{
+			alert(data.msg);
+		}
+	});
+	if(event && event.stopPropagation){
+		event.stopPropagation();
+	}
+}
+</script>
+##}

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	 <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>${_common.baseTitle()}商家端</title>
+	<link href="/shop/assets/css/bootstrap.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="/www/css/login.css" />
+	<script src="/shop/script/jquery.min.js"></script>
+	<script src="/shop/script/jquery.form.js"></script>
+	<script src="/shop/assets/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="bg-wrap">
+	<div class="main-cont-wrap login-model">
+		<h2 class="shop_logo"><i>${_common.baseTitle()}</i> 商家端</h2>
+		<div class="main-cont-c">
+			<form action="/shop/login" method="post" id="login_form">
+				<div class="form-title g-mb40">
+					<span class="s-txt-c s-fs20">管理员登陆</span>
+				</div>
+				<div class="ui-form-item g-mb30">
+					<span class="ui-form-txt">账号</span>
+					<input type="text" name="email" class="ui-form-input" placeholder="请填写登录账号" />
+				</div>
+				<div class="ui-form-item g-mb30">
+					<span class="ui-form-txt">密码</span>
+					<input type="password" name="password" class="ui-form-input" placeholder="请填写登录密码" />
+				</div>
+				<div class="ui-form-item g-mb30">
+					<span class="ui-form-txt">验证码</span>
+					<input type="text" name="code" class="ui-form-input" placeholder="请填写图片验证码" />
+					<img src="/shop/code" class="yzm_img" onclick="changeCodes(this)" id="changeCode" />
+				</div>
+				<div class="ui-form-btn">
+					<input type="button" class="ui-button login-btn" value="登录" data-toggle="modal" data-target="#myModal" />
+				</div>
+			</form>
+			<div class="zhucexieyi" data-toggle="modal" data-target="#myModal">
+				<img src="/shop/images/checked.png" />
+				登录即同意 <span>《商家入驻协议》</span>
+			</div>
+		</div>
+	</div>
+	<div class="footer-wrap">
+		<p class="s-tac s-txt-gy1">&copy; 2017 Simple Login Form. All Rights Reserved | Design by <a href="http://www.xiaodaofuli.com" target="_blank">青岛小道福利信息技术服务有限公司</a></p>
+	</div>
+</div>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        		<h4 class="modal-title" id="myModalLabel">${article.title!}</h4>
+			</div>
+			<div class="modal-body">
+				<div class="rzxy_body">${article.content!}</div>
+			</div>
+			<div class="modal-footer">
+		        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+				<button type="button" class="btn btn-default" onclick="submitForm()" style="background: #217be5;color: #fff;">确定</button>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+function changeCodes(object){
+	
+	$(object).attr("src", "/shop/code?t=" + Math.random());
+}
+function submitForm(){
+	
+	$('#login_form').ajaxSubmit({
+	    success: function(data){
+	    	if(data.success){
+	    		window.location.href="/shop/dashboard";
+	    	}else{
+	    		$(".yzm_img").attr("src", "/shop/code?t=" + Math.random());
+	    		alert(data.msg);
+	    	}
+	    }
+	});
+}
+//键盘回车事件
+document.onkeydown=function(event){
+	
+	if(event.keyCode==13){
+		return false;
+    }
+}
+</script>
+</body>
+</html>

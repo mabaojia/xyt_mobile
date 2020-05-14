@@ -1,0 +1,206 @@
+##tlayout("wap/layout.htm",{head_title:"照片列表"}){
+
+<!-- 文件上传所需要css和js -->
+<script type="text/javascript" src="/wap/js/jquery-weui.min.js"></script>
+<link rel="stylesheet" href="/wap/js/FileUpload/css/jquery.fileupload.css">
+<script type="text/javascript" src="/wap/js/FileUpload/jquery.iframe-transport.js"></script>
+<script type="text/javascript" src="/wap/js/FileUpload/vendor/jquery.ui.widget.js"></script>
+<script type="text/javascript" src="/wap/js/FileUpload/jquery.fileupload.js"></script>
+<script type="text/javascript" src="/wap/lib/exif.js"></script>
+<script type="text/javascript" src="/wap/lib/fabric.js"></script>
+<script type="text/javascript" src="/wap/js/canvaMain.js"></script>
+<div class="map_head">照片列表</div>
+<div class="content_w ">
+	<div class="content_list">
+		##for(_item in list!){
+			<div class="uploading_quantity">
+				<img src="${_item.img_url!}" />
+				<div class='modification_picture_quantity'>
+					<div class="bianji_btn w100">打印数量：${_item.number!}</div>
+				</div>
+			</div>
+		##}
+	</div>
+</div>
+##if(list==null || list.~size==0){
+	<div class="tail_print_btn">
+		<div class="uploading_btn_list">
+			<input type="file" name="image"  id="uploadImg" multiple />上传照片（${orders_item.goods_number!}）
+		</div>
+		<input type="hidden" name="img_urls" value="," />
+		<input type="hidden" name="numbers" value="," />
+		<div class="submit_btn_list" onclick="submitForm()">提交</div>
+	</div>
+##}
+<input type="hidden" value="${orders_item.goods_width!}" id="cutWidth"/>
+<input type="hidden" value="${orders_item.goods_height!}" id="cutHeight"/>
+<div class="div_canvas">
+	<div class="div_canvas_text">拖动位置，调整大小</div>
+	<canvas id="diy_canvas"></canvas>
+	<div class="div_canvas_bottom">
+		<div class="div_canvas_bottom_item err" onclick="hideCanvas()">取消</div>
+		<div class="div_canvas_bottom_item" onclick="endImg()">确认</div>
+	</div>
+</div>
+<img src="" id="test" />
+<script>
+var app  = {};
+var imgArr = [];
+var cutWidth = $("#cutWidth").val();
+var cutHeight = $("#cutHeight").val();
+var pageWidth = $(".div_canvas").width();
+var pageHeight = $(".div_canvas").height();
+
+$("#uploadImg").change(function(e){
+	
+	var files = e.target.files;
+
+	if(files.length<=0){
+		$.hideLoading();
+		return false;
+	}
+
+	$.showLoading();
+	for(var i=0;i<files.length;i++){
+	 	 uploadImg(files[i],(json)=>{
+			canvasMain.addImg(json.img_url,()=>{
+				var imgWidth = fabric.util.parseUnit(cutWidth+'mm')*300/96;
+				var obj = canvasMain.returnCanvasImg(imgWidth);
+				canvasMain.mainCanvas.clear();
+				uploadImg(obj.blob,(json)=>{
+					createHtml(json.img_url);
+					imgArr.push(json.img_url);
+
+					if(!files[i+1]){
+						$.hideLoading();
+					}
+
+				});
+			});
+		}); 
+	}
+})
+function createHtml(img_url){
+
+	var html="<div class='uploading_quantity'>" +
+					"<img src='" + img_url + "' />" +
+					"<div class='uploading_quantity_delete' onclick='deleteImg(this)'>x</div>" +
+					"<div class='modification_picture_quantity'>"+
+						"<div class='input'><input type='number' value='1' class='item_number' /></div>"+
+						"<div class='bianji_btn' onclick='updateImg(this)'>编辑</div>"+
+					"</div>" +
+				"</div>";
+	$(".content_list").append(html);	
+}
+function uploadImg(data,cb){
+
+    var self = this;
+    canvasMain.returnIMgFile(data,(newBlob)=>{
+    	var fd = new FormData();
+	   	fd.append('image',newBlob);
+	    $.ajax({
+	        url: "/wap/uploadImg",
+	        type: "post",
+	        dataType: "json",
+	        cache: false,
+	        data: fd,
+	        processData: false,// 不处理数据
+	        contentType: false, // 不设置内容类型
+	        success: function(data){
+	     		if(data.success){
+	     			typeof cb =="function" && cb(data);
+	     		}else{
+	     			alert(data.msg);
+	     		}
+	        }
+	    });
+    });
+}
+function deleteImg(object){
+	
+	var index = $(object).parent().index();
+	$(object).parent().remove();
+	imgArr.splice(index,1);
+}
+
+var load = false;
+function submitForm(){
+	
+	if(load){
+		return false;
+	}
+
+	load = true;
+
+	if(confirm("确定要提交图片，提交将不可再次修改哦~")){
+		$("input[name='numbers']").val(",");
+		$(".item_number").each(function(){
+			if($(this).val()==null || $(this).val()==""){
+				alert("数量不能为空");
+				return;
+			}
+			$("input[name='numbers']").val($("input[name='numbers']").val() + $(this).val() + ",");
+		});
+		var img_urls = ',' + imgArr.join(',') + ',';
+
+		$.showLoading();
+
+		$.post("/wap/user/savePicture",{oiid:"${orders_item.id!}",img_urls:img_urls,numbers:$("input[name='numbers']").val()},function(data){
+			$.hideLoading();
+			if(data.success){
+				location.reload(true);
+			}else{
+				load = false;
+				alert(data.msg);
+			}
+		});
+	}
+
+	load = false;
+	
+}
+function showCanvas(){
+	
+	$(".div_canvas").css({
+		'transform':'translateY(0)'
+	});
+}
+function hideCanvas(){
+	
+	$(".div_canvas").css({
+		'transform':'translateY(100%)'
+	});
+}
+function updateImg(object){
+
+	app.oldIndex = $(object).parent().parent().index();
+	app.obj = $(object);
+	showCanvas();
+	canvasMain.addImg(imgArr[app.oldIndex]);
+}
+function endImg(){
+
+	$.showLoading();
+
+	var imgWidth = fabric.util.parseUnit(cutWidth+'mm')*300/96;
+	var obj = canvasMain.returnCanvasImg(imgWidth);
+
+	hideCanvas();
+	uploadImg(obj.blob,(json)=>{
+		var img_url = json.img_url;
+		if(app.obj){
+			app.obj.attr('src',img_url);
+			var index = app.oldIndex;
+			$(".uploading_quantity").eq(index).find('img').attr('src',img_url);
+			imgArr[index] = img_url;
+			console.log(imgArr);
+			$.hideLoading();
+		}
+	});
+}
+$(document).ready(function(){
+
+	canvasMain.createCanvas('diy_canvas',pageWidth,pageHeight,cutWidth,cutHeight);
+});
+</script>
+##}
