@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<title>${head_title!}</title>
+	<link rel="stylesheet" type="text/css" href="/wap/css/style.css" />
+	<link rel="stylesheet" type="text/css" href="/wap/css/weui.min.css">
+	<link rel="stylesheet" type="text/css" href="/wap/css/jquery-weui.min.css">
+	<link rel="stylesheet" type="text/css" href="/wap/lib/swiper/swiper.min.css" />
+	<link rel="stylesheet" type="text/css" href="/wap/lib/font_epiumdosgkg/iconfont.css" />
+	<script type="text/javascript" src="/wap/js/jquery.min.js"></script>
+	<script type="text/javascript" src="/wap/js/jquery.form.js"></script>
+</head>
+<body>
+${layoutContent}
+##if(url!="/wap/goods" && url!="/wap/shop/address" && url!="/wap/user/ordersMsg" && url!="/wap/user/picture"){
+	<div class="weui-tabbar mall-nav">
+		##if(url=="/wap"){
+			<a href="/wap" class="weui-tabbar__item weui-bar__item_on">
+		        <span style="display: inline-block;position: relative;">
+		            <img src="/wap/images/index_elect.png" class="weui-tabbar__icon" />
+		        </span>
+		        <p class="weui-tabbar__label" style="color: #ff7300;">首页</p>
+		    </a>
+		##}else{
+			<a href="/wap" class="weui-tabbar__item">
+		        <span style="display: inline-block;position: relative;">
+		            <img src="/wap/images/index.png" class="weui-tabbar__icon" />
+		        </span>
+		        <p class="weui-tabbar__label">首页</p>
+		    </a>
+		##}
+		##if(url=="/wap/list" || url=="/wap/photo"){
+		    <a href="/wap/list" class="weui-tabbar__item weui-bar__item_on">
+		        <img src="/wap/images/Shopping_elect.png" class="weui-tabbar__icon" />
+		        <p class="weui-tabbar__label" style="color: #ff7300;">商城</p>
+		    </a>
+		##}else{
+			<a href="/wap/list" class="weui-tabbar__item">
+		        <img src="/wap/images/Shopping.png" class="weui-tabbar__icon" />
+		        <p class="weui-tabbar__label">商城</p>
+		    </a>
+		##}
+		##if(url=="/wap/shop/shopping"){
+			<a href="/wap/shop/shopping" class="weui-tabbar__item weui-bar__item_on">
+		        <span style="display: inline-block;position: relative;">
+		            <img src="/wap/images/Cart_elect.png" class="weui-tabbar__icon" />
+		        </span>
+		        <p class="weui-tabbar__label" style="color: #ff7300;">购物车</p>
+		    </a>
+		##}else{
+			<a href="/wap/shop/shopping" class="weui-tabbar__item">
+		        <span style="display: inline-block;position: relative;">
+		            <img src="/wap/images/Cart.png" class="weui-tabbar__icon" />
+		        </span>
+		        <p class="weui-tabbar__label">购物车</p>
+		    </a>
+		##}
+	    ##if(url_1=="/wap/user"){
+			<a href="/wap/user" class="weui-tabbar__item weui-bar__item_on">
+		        <img src="/wap/images/My_elect.png" class="weui-tabbar__icon" />
+		        <p class="weui-tabbar__label" style="color: #ff7300;">我的</p>
+		    </a>
+		##}else{
+			<a href="/wap/user" class="weui-tabbar__item">
+		        <img src="/wap/images/My.png" class="weui-tabbar__icon" />
+		        <p class="weui-tabbar__label">我的</p>
+		    </a>
+		##}
+	</div>
+	<div class="jiange60"></div>
+##}
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script>
+wx.config({
+	debug : false,
+	appId : '${wxconfig.appId!}',
+	timestamp : '${wxconfig.timestamp!}',
+	nonceStr : '${wxconfig.nonceStr!}',
+	signature : '${wxconfig.signature!}',
+	jsApiList : [ 'hideAllNonBaseMenuItem' ]
+});
+wx.ready(function() {
+	wx.hideAllNonBaseMenuItem({
+		success : function() {
+		}
+	});
+});
+</script>
+</body>
+</html>

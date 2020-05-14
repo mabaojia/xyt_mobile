@@ -1,0 +1,330 @@
+##tlayout("wap/layout.htm",{head_title:"商品详情"}){
+
+<script type="text/javascript" src="/wap/js/weui.min.js"></script>
+<script type="text/javascript" src="/wap/js/jquery-weui.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/wap/css/mobileSelect.css"/>
+<script type="text/javascript" src="/wap/js/mobileSelect.js"></script>
+<div class="detail_page">
+	<div class="swiper-container detail_lunbo">
+		<div class="swiper-wrapper">
+			##for(_item in img_list!){
+				<div class="swiper-slide"><img src="${_item!}" /></div>
+			##}
+		</div>
+		<div class="swiper-pagination"></div>
+	</div>
+	<div class="product-describe">
+		<div class="product-describe-title">
+	  		<span class="subtitle-text">${goods.title!}</span>
+	  	</div>
+	  	<div class="product-item-title product-detail-name">
+	  		<p class="sub-title padding">${goods.remark!}</p>
+	  	</div>
+	  	<div class="product-item-price">
+		 	<div class="down-price">
+		 		<span class="price1">
+		 			<span class="sign">￥</span>
+		 			<span class="number">${goods.price!}</span>
+		 		</span>
+		 	</div>
+			<div class="sales-volume">已售：${goods.sale_number!}</div>
+		</div>
+	</div>
+    <div class="js-store-info">
+       	<div class="renzheng block-item">
+			##for(_item in labels_list!){
+				<span class="js-rz-item-alert rz-item">
+	               	<span class="rz-name font-size-12 c-gray-darker">${_item!}</span>
+	           	</span>
+			##}           
+       	</div>
+    </div>
+    <div class="detail_format_p">
+    	<div class="detail_format_p_title">规格</div>
+    	<div class="standard">
+			<div class="standard_content">
+			    ##for(_item in format_list!){
+			    	<div class="standard_content_item"><span>${_item.title!}</span></div>
+			    ##}
+			</div>
+		</div>
+    </div>
+    <div class="kefu_detail" onclick="toggoleKefu(1)">
+    	<img src="/wap/images/kefu_img.jpg" />
+    	<div class="point"></div>
+    	<div class="kefu_detail_text">联系客服</div>
+    </div>
+    <div class="kefu_tanchu" >
+    	<div class="kefu_tanchu_header">
+    		<div class="title">客服微信</div>
+    		<div class="js-cancel sku-cancel" onclick="toggoleKefu(0)">
+			    <div class="cancel-img"></div>
+			</div>
+    	</div>
+    	<div class="kefu_tanchu_body">
+    		<img src="${shop.wx_qrcode!}" />
+    		<div class="kefu_tanchu_body_p">
+    			<span>微信号：</span> 
+    			<span>${shop.wx!}</span>
+    		</div>
+    	</div>
+    </div>
+    <div class="kefu_tanchu_mask" onclick="toggoleKefu(0)"></div>
+    <div class="detail_content">
+   		<div class="detail_content_nav" >
+			<div class="detail_content_nav_item cur"  onclick="showItem(this,0);">图文详情</div>
+			<div class="detail_content_nav_item" onclick="showItem(this,1);">商品评价（${comment_list.~size!}）</div>
+	    </div>
+	    <div>
+   			<div class="detail_article article_item cur">${goods.content!}</div>
+		    <div class="detail_comment article_item">
+				##for(_item in comment_list!){
+					<div class="comment_item">
+					    <div class="comment_item_top">
+							<img src="${_item.user_img_url!}" />
+							<span>${_item.user_name!}</span>
+					    </div>
+					    <div class="comment_item_middle">
+							<span>${_item.content!}</span>
+					    </div>
+					    <div class="comment_item_bottom clearfix">
+					    	##for(_each in _item.img_list!){
+					    		<div class="comment_img" style="background-image: url(${_each!});"></div>
+					    	##}
+					    </div> 
+					    <div class="comment_item_time">
+					        <span>${_item.create_date!,dateFormat='yyyy-MM-dd HH:mm'}</span>
+					    </div>
+					</div>
+				##}
+		    </div>
+   		</div>
+    </div>
+   	<div class="product-bar-footer-container clearfix">
+   		<div class="image-spot-container product-image-spot">
+   			<a href="/wap/shop/shopping">
+   				<div class="image-spot-img" style="background-image: url(/wap/images/cart_iocn.png)"></div>
+   			</a>
+   			##if(cart_number!=0){
+	   			<a href="/wap/shop/shopping"><span class="image-spot-dot">${cart_number!}</span></a>
+   			##}
+   		</div>
+   		<div class="switch-button-container add-cart-btn clickCart" onclick="showPop(this, 1);">加入购物车</div>
+		<div class="switch-button-container add-cart-btn clickable" onclick="showPop(this, 2);">立即购买</div>
+		##if(goods.source!=3 && exist("diy_1")){
+			<div class="switch-button-container add-cart-btn clickable2"><a href="/wap/diy/index?diyId=${diy_1.id!}&type=${diy_1.type!}">私人定制</a></div>
+		##}
+	</div>
+	<div style="height: 60px;"></div>
+</div>
+<div class="popup_bg" onclick="closePop();"></div>
+<div class="sku-layout sku-box-shadow popup popup_close">
+	<div class="sku-container-wrap">
+   		<div class="sku-layout-title">
+   			<div class="js-goods-thumb-container">
+   				<img class="js-goods-thumb goods-thumb" src="${goods.img_url!}" />
+   			</div>
+   			<div class="goods-base-info clearfix" style="width: 90%;overflow: hidden;">
+			    <p class="title">${goods.title!}</p>
+			    <div class="goods-price clearfix">
+			        <div class="current-price">
+			            <span class="price-name">¥</span>
+			            <span class="js-goods-price">${goods.price!}</span>
+			        </div>
+			    </div>
+			</div>
+			<div class="js-cancel sku-cancel" onclick="closePop();">
+			    <div class="cancel-img"></div>
+			</div>
+   		</div>
+   		<div class="goods_scroll_wrap">
+   			<div class="standard">
+				<div class="standard_content">
+				    ##for(_item in format_list!){
+				    	<div class="standard_content_item" onclick="format('${_item.title!}', ${_item.price!}, this)"><span>${_item.title!}</span></div>
+				    ##}
+				</div>
+			</div>
+			##if(!exist("diy")){
+				##if(goods.source!=3){
+					<div class="weui-cells detail_weui-cells">
+			            <a class="weui-cell weui-cell_access" href="javascript:void(0);" id="picker1">
+			                <div class="weui-cell__bd">
+			                    <p>品牌型号</p>
+			                </div>
+			                <div class="weui-cell__ft">选择</div>
+			            </a>
+		    		</div>
+				##}
+			##}
+    		<div class="goods_number">
+		        <span class="t">购买数量</span>
+		        <div class="goods_number_content">
+					<span class="reduce incr-btn" data-key="reduce">-</span>
+					<span class="number add_number">1</span>
+					<span class="add incr-btn" data-key="add">+</span>
+		        </div>
+		    </div>
+	    </div>
+	    <div class="confirm-action content-foot">
+	    	<input type="hidden" name="title" />
+	    	<input type="hidden" name="type" />
+	    	<input type="hidden" name="parent_id" value="${parent.id!}" />
+	    	<input type="hidden" name="brand_id" value="${brand.id!}" />
+	    	<input type="hidden" name="number" value="1" />
+	    	<a href="javascript:addCart();" class="js-confirm-it">确定</a>
+	    </div>
+   	</div>
+</div>
+<script type="text/javascript" src="/wap/js/swiper.min.js"></script>
+<script>
+
+function toggoleKefu(key){
+	if(key){
+		$(".kefu_tanchu").show();
+		$(".kefu_tanchu_mask").show();
+	}else{
+		$(".kefu_tanchu").hide();
+		$(".kefu_tanchu_mask").hide();
+	}
+}
+//轮播图
+var bannerSwiper = new Swiper('.detail_lunbo', {
+	loop: true,
+	pagination: {
+		el: '.swiper-pagination'
+	},
+});
+function showItem(obj, num) {
+ 	
+ 	var num = parseInt(num);
+ 	$(obj).addClass('cur').siblings().removeClass('cur')
+ 	$(".article_item").eq(num).show().siblings().hide();
+}
+function showPop(obj, type){
+
+ 	$(".popup").removeClass('popup_close');
+ 	$(".popup_bg").show();
+ 	$(".detail_page").addClass('overflowHidden');
+ 	$("input[name='type']").val(type);
+}
+function closePop(obj){
+ 	
+	$(".popup").addClass('popup_close');
+ 	$(".popup_bg").hide();
+ 	$(".detail_page").removeClass('overflowHidden');
+}
+$(document).ready(function(){
+	
+	$(".incr-btn").on("click", function () {
+	    var oldValue = $('.add_number').text();
+	    if ($(this).data('key') == "add") {
+	    	$('.add_number').text(parseFloat(oldValue) + 1);
+	    } else {
+	        if (oldValue > 1) {
+	        	$('.add_number').text(parseFloat(oldValue) - 1);
+	        } else {
+	        	$('.add_number').text(1);
+	        }
+	    }
+	    $("input[name='number']").val($('.add_number').text());
+	});
+});
+function format(title, price, object){
+	
+	$(object).parent().find("div").removeClass("select");
+	$(object).addClass("select");
+	$("input[name='title']").val(title);
+	$(".js-goods-price").text(price);
+}
+function addCart(){
+	
+	var title=$("input[name='title']").val();
+	if(title!=null && title!=""){
+		$.post("/wap/shop/addCart",{id:"${goods.id!}",did:"${diy.id!}",title:title,number:$("input[name='number']").val(),brand_id:$("input[name='brand_id']").val()},function(data){
+			if(data.success){
+				var type=$("input[name='type']").val();
+				if(type==1){
+					window.location.href="/wap/goods?code=${goods.code!}&dcode=${diy.code!}";
+				}else{
+					window.location.href="/wap/shop/shopping";
+				}
+			}else{
+				alert(data.msg);
+			}
+		});
+	}else{
+		alert("请选择规格");
+	}
+}
+var addressLocation = new MobileSelect({
+    trigger: '#picker1',
+    title: '选择品牌型号',
+    wheels: [
+        {data:[
+               ##if(!exist("diy")){
+            	   ##for(_item in brand_list!){
+                 	  ##if(_itemLP.index==brand_list.~size!){
+                 		  {
+                               id:'${_item.id!}',
+                               value:'${_item.title!}',
+                               childs:[
+     							##for(_each in _item.child_list!){
+     								  ##if(_eachLP.index==_item.child_list.~size!){
+     									  {
+     										  id:'${_each.id!}', 
+     										  value:'${_each.title!}'
+     									   }  	
+     								  ##}else{
+     									  {
+     										  id:'${_each.id!}', 
+     										  value:'${_each.title!}'
+     									   },
+     								  ##}
+     							##}
+                               ]
+                           }
+                 	  ##}else{
+                 		  {
+                 			  id:'${_item.id!}',
+                               value:'${_item.title!}',
+                               childs:[
+     							##for(_each in _item.child_list!){
+     								  ##if(_eachLP.index==_item.child_list.~size!){
+     									  {
+     										  id:'${_each.id!}', 
+     										  value:'${_each.title!}'
+     									   }  	
+     								  ##}else{
+     									  {
+     										  id:'${_each.id!}', 
+     										  value:'${_each.title!}'
+     									   },
+     								  ##}
+     							##}
+                               ]
+                           },
+                 	  ##} 
+                    ##}
+               ##}else{
+            	   {
+                       id:'${parent.id!}',
+                       value:'${parent.title!}',
+                       childs:[
+							{
+							  id:'${brand.id!}', 
+							  value:'${brand.title!}'
+						   }
+                       ]
+                   }
+			   ##}
+        ]}
+      ],
+    position:[0,0],
+    callback:function(indexArr, data){
+        $("input[name='parent_id']").val(data[0].id);
+        $("input[name='brand_id']").val(data[1].id);
+    } 
+});
+</script>
+##}

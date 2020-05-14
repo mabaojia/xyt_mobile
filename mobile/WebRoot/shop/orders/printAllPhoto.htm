@@ -1,0 +1,99 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title> </title>
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">
+	<link rel="stylesheet" type="text/css" href="/shop/orders/print/print.css">
+	<script type="text/javascript" src="/shop/script/jquery.min.js"></script>
+		<script type="text/javascript" src="/shop/script/jquery-migrate-1.2.1.min.js"></script>
+
+	<script type="text/javascript" src="/shop/orders/print/jquery.jqprint-0.3.js"></script>
+	<script type="text/javascript" src="/shop/script/youziku.client.min.js"></script>
+
+	<style media="print">
+      
+
+    @page {
+          size: auto;
+          margin: 0mm;
+    }
+
+    .print-content {
+        display: block;
+        width: 100%;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        height: 100%;
+    }
+
+    @page :left {
+        margin-left: 2cm;
+    }
+
+    img {
+        display: inline-block;
+        /*border: 1px solid #000;*/
+        vertical-align: bottom;
+    }
+</style>
+
+
+</head>
+<body>
+<div id="print-content" class="print-content" media="print">
+	<div class="print_photo_body clearfix">
+		##for(_item in goods_list!){
+			##if(_item.picture_list!=null &&_item.picture_list.~size!=0){
+				##for(_each in _item.picture_list!){
+					<div class="print_photo_body_item">
+						<img src="${_each.img_url!}"  style="width:${_item.goods_width!}mm;height:${_item.goods_height!}mm" />
+					</div>
+				##}
+			##}
+		##}
+	</div>
+</div>
+<div class="print_preview_mark"></div>
+<div class="print_preview">
+	<div class="print_preview_title">印前检查</div>
+	<div class="print_preview_body clearfix">
+		##for(_item in goods_list!){
+			##if(_item.picture_list!=null &&_item.picture_list.~size!=0){
+				##for(_each in _item.picture_list!){
+					<div class="print_preview_body_item">
+						<div class="title">
+							（${_item.goods_width!}mm * ${_item.goods_height!}mm）
+						</div>
+						<img src="${_each.img_url!}" />
+					</div>
+				##}
+			##}
+		##}
+	</div>
+	<div class="noPrint no-print" onclick="print()">打印</div>
+</div>
+<div class="full_screen">
+	<div class="spinner">
+		<div class="double-bounce1"></div>
+		<div class="double-bounce2"></div>
+	</div>
+</div>
+<script type="text/javascript" src="/shop/script/fabric.js"></script>
+<script type="text/javascript" src="/shop/script/canvaMain.js"></script>
+<script type="text/javascript">
+function print(){
+	
+   $("#print-content").jqprint({
+        debug: false, // 如果是true则可以显示iframe查看效果（iframe默认高和宽都很小，可以再源码中调大），默认是false
+        importCSS: true, // true表示引进原来的页面的css，默认是true。（如果是true，先会找$("link[media=print]")，若没有会去找$("link")中的css文件）
+        printContainer: true, // 表示如果原来选择的对象必须被纳入打印（注意：设置为false可能会打破你的CSS规则）。
+        operaSupport: true// 表示如果插件也必须支持歌opera浏览器，在这种情况下，它提供了建立一个临时的打印选项卡。默认是true
+    });
+    $.post("/shop/system/number",{},function(data){});
+}
+</script>
+</body>
+</html>

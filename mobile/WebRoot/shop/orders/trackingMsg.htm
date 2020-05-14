@@ -1,0 +1,41 @@
+<link rel="stylesheet" href="/shop/assets/css/bootstrap.min.css" />
+<link rel="stylesheet" href="/shop/assets/css/font-awesome.min.css" />
+<link rel="stylesheet" href="/shop/assets/css/ace.min.css" />
+<link rel="stylesheet" href="/shop/assets/css/ace-rtl.min.css" />
+<link rel="stylesheet" href="/shop/assets/css/ace-skins.min.css" />
+
+<script src="/shop/script/jquery.min.js"></script>
+<script src="/shop/script/jquery.form.js"></script>
+
+<div class="page-content" style="height:450px;overflow-y:scroll;">
+	<div class="page-header">
+		<h1>物流详情</h1>
+	</div>
+	<div class="row">
+		<div class="col-xs-12">
+			<div style="margin-bottom: 10px;">
+				<div style="font-size: 16px;font-weight: bold;">
+					<span>${orders.tracking_company!} | ${orders.tracking_code!}</span>
+					<span style="margin-left: 10px;font-size: 14px;font-weight: normal;">更新时间：${orders.tracking_update_date!,dateFormat='yyyy-MM-dd HH:mm'}</span>
+				</div>
+			</div>
+		</div>
+		<div class="col-xs-12">
+			<div style="margin-bottom: 25px;">
+				##for(_tracking in list!){
+				<div style="border-bottom: 1px dashed #ccc;padding-top:10px;">
+					<div>${_tracking.content!}</div>
+					<div style="height: 30px;line-height: 30px;">
+						<span style="color: #999;">${_tracking.create_date!,dateFormat='yyyy-MM-dd HH:mm'}</span>
+					</div>
+				</div>
+				##}
+			</div>
+		</div>
+	</div>
+</div>
+<div style="width:100%;text-align: center;">
+	<button type="reset" class="btn" onclick="parent.hideAlert()" style="padding:0px 5px;margin-top:5px;">
+		<i class="icon-undo bigger-110"></i>关闭
+	</button>
+</div>

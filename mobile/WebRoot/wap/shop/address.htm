@@ -1,0 +1,409 @@
+##tlayout("wap/layout.htm",{head_title:"订单详情"}){
+
+<script type="text/javascript" src="/wap/js/weui.min.js"></script>
+<script type="text/javascript" src="/wap/js/jquery-weui.min.js"></script>
+<script type="text/javascript" src="/wap/js/city-picker.min.js"></script>
+<div class="payMethod">
+	<div class="payMethod_top">
+		<div class="title">
+			<img src="/wap/images/dsh_icon.png" />
+			<span>发货方式</span>
+		</div>
+	</div>
+	<div class="payMethod_bottom">
+		##if(shop.tracking==1){
+			<div class="payMethod_item cur" style="cursor:pointer" onclick="changeTracking(1, this)"><span>邮递</span></div>
+		##}
+		##if(shop.tracking==2){
+			<div class="payMethod_item cur" style="cursor:pointer" onclick="changeTracking(2, this)"><span>自提</span></div>
+		##}
+		##if(shop.tracking==3){
+			##if(tracking==2){
+				<div class="payMethod_item" style="cursor:pointer" onclick="changeTracking(1, this)"><span>邮递</span></div>
+				<div class="payMethod_item cur" style="cursor:pointer" onclick="changeTracking(2, this)"><span>自提</span></div>
+			##}else{
+				<div class="payMethod_item cur" style="cursor:pointer" onclick="changeTracking(1, this)"><span>邮递</span></div>
+				<div class="payMethod_item" style="cursor:pointer" onclick="changeTracking(2, this)"><span>自提</span></div>
+			##}
+		##}
+	</div> 
+</div>
+<div class="app-order express">
+	##if(tracking==1){
+		<div class="express-panel" onclick="showPop();" id="address_1">
+	##}else{
+		<div class="express-panel" onclick="showPop();" id="address_1" style="display: none;">
+	##}
+		##if(user_take_msg==1){
+			<ul class="express-detail">
+	           	<li class="clearfix">
+	           		<span class="name">收件人：${user.take_name!}</span>
+	           		<span class="tel">${user.take_telephone!}</span>
+	           	</li>
+	           	##if(user.take_province!=null && user.take_province!=""){
+		            <li class="address-detail">${user.take_area_msg!}${user.take_address!}（${user.take_post_code!}）</li>
+	           	##}
+	        </ul>
+		##}else{
+			<div class="express_none" onclick="showPop();">
+	        	<a href="javascript:void(0)">点击填写收件地址</a>
+	        </div>
+		##}
+	</div>
+	##if(tracking==2){
+		<div class="express-panel" onclick="showPopZiti();" id="address_2">
+	##}else{
+		<div class="express-panel" onclick="showPopZiti();" id="address_2" style="display: none;">
+	##}
+		##if(user_take_msg==1){
+			<ul class="express-detail">
+	           	<li class="clearfix">
+	           		<span class="name">自提人：${user.take_name!}</span>
+	           		<span class="tel">${user.take_telephone!}</span>
+	           	</li>
+	        </ul>
+		##}else{
+			<div class="express_none" onclick="showPop1();">
+	        	<a href="javascript:void(0)">点击填写自提人</a>
+	        </div>
+		##}
+	</div>
+</div>
+<div class="weui-cells__title">店铺信息</div>
+<div class="shop_info">
+	<div class="left">
+		<div class="title">${shop.title!}</div>
+		<div class="address">${shop.address!}</div>
+	</div>
+	<div class="right">
+		<a href="tel:${shop.mobile!}" class="right_func_item">
+			<img src="/wap/images/tel.png" />
+		</a>
+	</div>
+</div>
+<div class="js-goods-list-container">
+	<div class="js-header header">
+		<a class="font-size-14" href="javascript:void(0)">商品详情</a>
+	</div>
+	<div class="js-goods-list">
+		##for(_item in goods_list!){
+		<div class="js-goods-item order-goods-item clearfix block-list">
+			<div class="name-card name-card-goods clearfix">
+				##if(_item.diy_id!=null && _item.diy_id!=""){
+                 	<a href="/wap/goods?code=${_item.goods.code!}&dcode=${_item.diy.code!}" class="thumb"><img class="js-view-image" src="${_item.diy.img_url!}" /></a>
+                ##}else{
+                  	<a href="/wap/goods?code=${_item.goods.code!}" class="thumb"><img class="js-view-image" src="${_item.goods.img_url!}" /></a>
+                ##}
+			    <div class="detail">
+			    	<div class="clearfix detail-row">
+			            <div class="right-col text-right">
+			                <div class="price">¥<span>${_item.goods.price!}</span></div>
+			            </div>
+			            <div class="left-col">
+			            	 ##if(_item.diy_id!=null && _item.diy_id!=""){
+	                         	<a href="/wap/goods?code=${_item.goods.code!}&dcode=${_item.diy.code!}"><h3 class="l2-ellipsis">${_item.goods.title!}</h3></a>
+	                         ##}else{
+	                            <a href="/wap/goods?code=${_item.goods.code!}"><h3 class="l2-ellipsis">${_item.goods.title!}</h3></a>
+	                         ##}
+			            </div>
+			        </div>
+			        <div class="clearfix detail-row">
+			            <div class="right-col">
+			                <div class="num c-gray-darker">* ${_item.number!}</div>
+			            </div>
+			            <div class="left-col">
+			                <p class="c-gray-darker sku">
+			                	【${_item.title!}】
+			                	##if(_item.diy_id!=null && _item.diy_id!=""){
+									【定制商品】
+								##}
+								##if(_item.goods.source==1 || _item.goods.source==2){
+									【${_item.parent.title!}->${_item.brand.title!}】
+								##}
+			                </p>
+			            </div>
+			        </div>
+			    </div>
+			</div>
+		</div>
+		##}
+	</div>
+	<form method="post" action="/wap/shop/createOrders" id="create_orders_form">
+		<div class="weui-cells js-total_new weui-cells_form">
+		    <div class="weui-cell">
+		        <div class="weui-cell__hd"><label class="weui-label">订单备注</label></div>
+		        <div class="weui-cell__bd">
+		            <input class="weui-input" type="text" placeholder="请输入订单备注" name="remark" />
+		        </div>
+		    </div>
+		</div>
+		<input type="hidden" name="tracking" value="${tracking!}" />
+	</form>
+</div>
+<div class="weui-cells order_msg">
+	<div class="weui-cell">
+        <div class="weui-cell__bd">
+            <p>商品小计</p>
+        </div>
+       	<div class="weui-cell__ft">￥${subtotal!}</div>
+   	</div>
+   	##if(tracking==1){
+	   	<div class="weui-cell" id="freight">
+	        <div class="weui-cell__bd">
+	            <p>运费</p>
+	        </div>
+	       	<div class="weui-cell__ft">￥${freight!}</div>
+	   	</div>
+	##}else{
+		<div class="weui-cell" id="freight" style="display: none;">
+	        <div class="weui-cell__bd">
+	            <p>运费</p>
+	        </div>
+	       	<div class="weui-cell__ft">￥${freight!}</div>
+	   	</div>
+	##}
+</div>
+<!-- 创建订单 -->
+<div class="cart-bottom order_buttom ">
+    <div class="left">
+    	##if(tracking==1){
+        	<div class="one">总计:￥<span id="grand_total">${grand_total!}</span></div>
+        ##}else{
+        	<div class="one">总计:￥<span id="grand_total">${subtotal!}</span></div>
+        ##}
+    </div>
+    <div class="right">
+    	##if(shop.payment==1){
+    		<a href="javascript:createOrdersPayment()" class="bottom-button bottom-button-active ml0">微信支付</a>
+    	##}else if(shop.payment==2){
+    		<a href="javascript:createOrders()" class="bottom-button bottom-button-active err">线下付款</a>
+    	##}else{
+	    	<a href="javascript:createOrders()" class="bottom-button bottom-button-active err">线下付款</a>
+	        <a href="javascript:createOrdersPayment()" class="bottom-button bottom-button-active ml0">微信支付</a>
+    	##}
+    </div>
+</div>
+<div style="height: 60px;"></div>
+<!-- 弹窗 -->
+<div class="popup_bg" onclick="closePop();"></div>
+<div class="sku-layout sku-box-shadow popup popup_close">
+	<div class="popup_header">
+		<div class="popup_header_title">收件地址</div>
+		<div class="js-cancel sku-cancel" onclick="closePop();">
+		    <div class="cancel-img"></div>
+		</div>
+	</div>
+	<div class="popup_middle">
+		<form class="weui-cells weui-cells_form" action="/wap/user/updateAddress" method="post" id="edit_address_form">
+			<div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">收件人</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="text" placeholder="请输入收件人" value="${user.take_name!}" name="name" />
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">手机号</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="text" placeholder="请输入手机号" value="${user.take_telephone!}" name="telephone" />
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">地区</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="text" id="city-picker" placeholder="请选择地区" value="${user.take_area_msg!}" />
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">详细地址</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="text" placeholder="请输入详细地址" value="${user.take_address!}" name="address" />
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">邮编</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="text" placeholder="请输入邮编" value="${user.take_post_code!}" name="post_code" />
+                </div>
+            </div>
+            <input type="hidden" name="area_msg" value="${user.take_area_msg!}" />
+		</form>
+		<div class="action-container">
+            <a class="weui-btn weui-btn_primary" href="javascript:updateAddress()" id="showTooltips">保存</a>
+        </div>
+	</div>
+</div>
+<!-- 弹窗 -->
+<div class="popup_bg_ziti" onclick="closePopZiti();"></div>
+<div class="sku-layout sku-box-shadow popup_ziti popup_close">
+	<div class="popup_header">
+		<div class="popup_header_title">自提人</div>
+		<div class="js-cancel sku-cancel" onclick="closePopZiti();">
+		    <div class="cancel-img"></div>
+		</div>
+	</div>
+	<div class="popup_middle">
+		<form class="weui-cells weui-cells_form" action="/wap/user/updateAddressZiti" method="post" id="edit_address_form_ziti">
+			<div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">自提人</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="text" placeholder="请输入自提人" value="${user.take_name!}" name="name" />
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">手机号</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="text" placeholder="请输入手机号" value="${user.take_telephone!}" name="telephone" />
+                </div>
+            </div>
+		</form>
+		<div class="action-container">
+            <a class="weui-btn weui-btn_primary" href="javascript:updateAddressZiti()" id="showTooltips">保存</a>
+        </div>
+	</div>
+</div>
+<script>
+$("input,textarea").on("blur", function() {
+    
+	window.scroll(0, 0);
+});
+$("#city-picker").cityPicker({
+   	title: "请选择地区",
+   	onChange:function(res){
+   		console.log(res.displayValue.join(" "));
+   		console.log(res.value.join(" "));
+   		$("input[name='area_msg']").val(res.displayValue.join(" "));
+   	}
+});
+function showPop(){
+
+   	$(".popup").removeClass('popup_close');
+   	$(".popup_bg").show();
+}
+function closePop(){
+	   
+	$(".popup").addClass('popup_close');
+   	$(".popup_bg").hide();
+   	$(".weui-picker-container").hide();
+}
+function updateAddress(){
+	
+	$('#edit_address_form').ajaxSubmit({
+	    success: function(data){
+	    	if(data.success){
+	    		window.location.href="/wap/shop/address?tracking=1";
+	    	}else{
+	    		alert(data.msg);
+	    	}
+	    }
+	});
+}
+function showPopZiti(){
+
+   	$(".popup_ziti").removeClass('popup_close');
+   	$(".popup_bg_ziti").show();
+}
+function closePopZiti(){
+	   
+	$(".popup_ziti").addClass('popup_close');
+   	$(".popup_bg_ziti").hide();
+}
+function updateAddressZiti(){
+	
+	$('#edit_address_form_ziti').ajaxSubmit({
+	    success: function(data){
+	    	if(data.success){
+	    		window.location.href="/wap/shop/address?tracking=2";
+	    	}else{
+	    		alert(data.msg);
+	    	}
+	    }
+	});
+}
+var new_post=1;
+function createOrdersPayment(){
+	
+	if(new_post==1){
+		new_post=0;
+		$('#create_orders_form').ajaxSubmit({
+	    	success: function(data){
+	    		if(data.success){
+    				$.post("/wap/shop/payment",{code:data.code},function(data){
+    					if(data.success){
+    						WeixinJSBridge.invoke('getBrandWCPayRequest',{
+    							"appId":data.pay_msg.appId,
+    							"timeStamp":data.pay_msg.timeStamp,
+    							"nonceStr":data.pay_msg.nonceStr,
+    							"package":data.pay_msg._package,
+    							"signType": "MD5",
+    							"paySign":data.pay_msg.paySign
+    						},
+    						function(res){
+    							if(res.err_msg=='get_brand_wcpay_request:ok'){
+    								alert("支付成功");
+    								setTimeout(function(){
+    									window.location.href="/wap/user/orders";
+    								}, 1000);
+    							}else{
+    								alert("支付失败");
+    								setTimeout(function(){
+    									window.location.href="/wap/user/orders";
+    								}, 1000);
+    							}
+    						});
+    					}else{
+    						alert(data.msg);
+    						setTimeout(function(){
+								window.location.href="/wap/user/orders";
+							}, 1000);
+    					}
+    				});	 
+		    	}else{
+		    		new_post=1;
+		    		alert(data.msg);
+		    	}
+	    	}
+	    });
+	}else{
+		alert("支付请求中...");
+	}
+}
+function createOrders(){
+	
+	if(new_post==1){
+		new_post=0;
+		$('#create_orders_form').ajaxSubmit({
+	    	success: function(data){
+	    		if(data.success){
+	    			alert("创建成功");
+					setTimeout(function(){
+						window.location.href="/wap/user/orders";
+					}, 1000); 
+		    	}else{
+		    		new_post=1;
+		    		alert(data.msg);
+		    	}
+	    	}
+	    });
+	}else{
+		alert("支付请求中...");
+	}
+}
+function changeTracking(tracking, object){
+	
+	$(".payMethod_bottom").find("div").removeClass("cur");
+	$(object).addClass("cur");
+	if(tracking==1){
+		$("#address_2").hide();
+		$("#address_1").show();
+		$("#freight").show();
+		$("#grand_total").text("${grand_total!}");
+	}else{
+		$("#address_1").hide();
+		$("#address_2").show();
+		$("#freight").hide();
+		$("#grand_total").text("${subtotal!}");
+	}
+	$("input[name='tracking']").val(tracking);
+}
+</script>
+##}

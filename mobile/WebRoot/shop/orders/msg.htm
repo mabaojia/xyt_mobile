@@ -1,0 +1,330 @@
+##tlayout("shop/layout.htm"){
+<script type="text/javascript" src="/shop/script/youziku.client.min.js"></script>
+<div class="breadcrumbs">
+	<div class="col-sm-12 breadcrumbs_title">订单详情</div>
+</div>
+<div class="page-content">
+	<div class="row">
+		<div class="col-xs-12">
+			<table class="table table_new_dingdan">
+				<tr class="one">
+					<th>订单号</th>
+					<th>小计</th>
+					<th>运费</th>
+					<th>总计</th>
+					<th>支付方式</th>
+					<th>发货方式</th>
+					<th>状态</th>
+					<th>运单号</th>
+					<th>创建时间</th>
+				</tr>
+				<tr>
+					<td>${orders.code!}</td>
+					<td>${orders.subtotal!}</td>
+					<td>${orders.freight_price!}</td>
+					<td>${orders.grand_total!}</td>
+					<td>
+						##if(orders.payment!=null && orders.payment!=""){
+							##if(orders.payment==1){
+								微信支付
+							##}else{
+								线下支付
+							##}
+						##}
+					</td>
+					<td>
+						##if(orders.tracking==1){
+							邮寄
+						##}else{
+							自提
+						##}
+					</td>
+					<td>
+						##if(orders.closed==1){
+							已关闭
+						##}else{
+							##if(orders.status==0){
+								待付款
+							##}else if(orders.status==1){
+								##if(orders.tracking==1){
+									待发货
+								##}else{
+									待自提
+								##}
+							##}else if(orders.status==2){
+								##if(orders.tracking==1){
+									已发货
+								##}else{
+									已自提
+								##}
+							##}else if(orders.status==3){
+								已完成
+							##}else if(orders.status==8){
+								已收货
+							##}
+						##}
+					</td>
+					<td>
+						##if(orders.tracking_code!=null && orders.tracking_code!=""){
+							<div>${orders.tracking_company!}（<a href="javascript:showAlert('/shop/orders/trackingMsg?id=${orders.id!}')">${orders.tracking_code!}</a>）</div>
+							<div style="margin-top: 5px;">${orders.tracking_date!,dateFormat='yyyy-MM-dd HH:mm'}</div>
+						##}
+					</td>
+					<td>${orders.create_date!,dateFormat='yyyy-MM-dd HH:mm:ss'}</td>
+				</tr>
+			</table>
+		</div>
+		##if(orders.tracking==1){
+			<div class="col-xs-12">
+				<table class="table table_new_dingdan">
+					<tr class="one">
+						<th colspan="2">收货地址</th>
+					</tr>
+					<tr>
+						<td style="width: 10%">收件人</td>
+						<td>${orders.take_name!} | ${orders.take_telephone!}</td>
+					</tr>
+					<tr>
+						<td style="width: 10%">收件地址</td>
+						<td>${orders.take_area_msg!} ${orders.take_address!}（${orders.take_post_code!}）</td>
+					</tr>
+				</table>
+			</div>
+		##}else{
+			<div class="col-xs-12">
+				<table class="table table_new_dingdan">
+					<tr class="one">
+						<th colspan="2">自提人</th>
+					</tr>
+					<tr>
+						<td style="width: 10%">自提人</td>
+						<td>${orders.take_name!} | ${orders.take_telephone!}</td>
+					</tr>
+				</table>
+			</div>
+		##}
+		##if(orders.remark!=null && orders.remark!=""){
+			<div class="col-xs-12">
+				<table class="table table_new_dingdan">
+					<tr class="one">
+						<th>订单备注</th>
+					</tr>
+					<tr>
+						<td>${orders.remark!}</td>
+					</tr>
+				</table>
+			</div>
+		##}
+		<div class="col-xs-12">
+			<div class="table-responsive">
+				<table class="table table-striped table-bordered table-hover">
+					<thead>
+						<tr>
+							<th style="width: 30%">商品</th>
+							<th>品牌型号</th>
+							<th>规格</th>
+							<th>数量</th>
+							<th>单价</th>
+							<th>小计</th>
+							<th>定制商品</th>
+						</tr>
+					</thead>
+					<tbody>
+						##for(_item in goods_list!){
+						<tr class="item_goods">
+							<td>
+								<div>
+									<a href="javascript:showBig('${_item.goods_img_url!}')" target="_blank">
+										<img src="${_item.goods_img_url!}" style="max-height: 100px;max-width: 100px;" />
+									</a>
+								</div>
+								<div style="margin-top: 5px;">${_item.goods_title!}</div>
+							</td>
+							<td>
+								##if(_item.goods_source!=3){
+									${_item.item_parent.title!}->${_item.item_brand.title!}
+								##}
+							</td>
+							<td>${_item.goods_format_title!}</td>
+							<td>${_item.item_number!}</td>
+							<td>${_item.item_price!}</td>
+							<td>${_item.item_subtotal!}</td>
+							<td>
+								##if(_item.diy_id!=null && _item.diy_id!=""){
+                            		<div>
+                            			${_item.parent.title!}->${_item.brand.title!}
+                            			##if(_item.diy.type==1){
+                            				（手机壳）
+                            			##}else if(_item.diy.type==2){
+                            				（手机膜）
+                            			##}else if(_item.diy.type==3){
+                            				（服装）
+                            			##}else if(_item.diy.type==4){
+                            				（雕刻）
+                            			##}else if(_item.diy.type==5){
+                            				（礼品）
+                            			##}
+                            		</div>
+                            		##if(_item.diy.big_img_url==null || _item.diy.big_img_url==""){
+	                            		<div style="margin-top: 5px;">
+	                            			<a href="javascript:void(0);" class="down_img" onclick="loadDiy(${_item.diy.id!}, ${_item.id!})">生成高清图</a>
+	                            		</div>
+                            		##}else{
+                            			<div style="margin-top: 5px;"><a href="${_item.diy.big_img_url!}" target="_blank"><img src="${_item.diy.big_img_url!}" style="max-height: 200px;max-width: 200px;" /></a></div>
+                            			<div style="margin-top: 5px;">${_item.diy.width!}mm * ${_item.diy.height!}mm</div>
+                            		##}
+                            	##}
+                            	##if(_item.goods_number!=0){
+                            		${_item.goods_width!}mm * ${_item.goods_height!}mm (${_item.goods_number!}张)
+                            	##}
+                            </td>
+						</tr>
+						##}
+					</tbody>
+				</table>
+			</div>
+		</div>
+		##for(_item in goods_list!){
+			##if(_item.goods_number!=0){
+				<div class="col-xs-12">
+					<div class="table-responsive">
+						<table class="table table-striped table-bordered table-hover">
+							<thead>
+								<tr>
+									<th>图片</th>
+									<th>数量</th>
+									<th>下载</th>
+								</tr>
+							</thead>
+							<tbody>
+								##for(_each in _item.picture_list!){
+								<tr class="item_goods">
+									<td><a href="javascript:showBig('${_each.img_url!}')"><img src="${_each.img_url!}" style="max-height: 100px;max-width: 100px;" /></a></td>
+									<td>${_each.number!}</td>
+									<td><a href="/shop/orders/downloadPicture?id=${_each.id!}">下载图片</a></td>
+								</tr>
+								##}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			##}
+		##}
+		<div class="col-xs-12">
+			<div style="border: 1px dashed #ccc;padding: 10px;">
+				<div class="form-group">订单日志</div>
+				##for(_log in log_list!){
+					<div class="form-group">
+						<div>${_log.create_date!,dateFormat='yyyy-MM-dd HH:mm'}</div>
+						<div style="margin-top: 10px;">${_log.content!}</div>
+					</div>
+				##}
+			</div>
+		</div>
+	</div>
+</div>
+<div class="full_screen">
+	<div class="spinner">
+		<div class="double-bounce1"></div>
+		<div class="double-bounce2"></div>
+	</div>
+</div>
+
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+	    <div class="modal-content">
+			<div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="myModalLabel">图片</h4>
+			</div>
+			<div class="modal-body">
+		      	<div class="modal_img_wrap" style="text-align: center;">
+					<img id="modal_img" style="width: 240px;" />
+		      	</div>
+			</div>
+			<div class="modal-footer">
+	        	<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+			</div>
+	    </div>
+	</div>
+</div>
+
+
+
+<script type="text/javascript" src="/shop/script/fabric.js"></script>
+
+<script type="text/javascript" src="/shop/script/canvaMain.js"></script>
+<script type="text/javascript">
+
+
+function showBig(imgUrl){
+	
+	$("#modal_img").attr('src',imgUrl);
+	$('#myModal').modal();
+}
+
+function loadDiy(id,pid){
+	
+	shopApiDiyItem(id,(res)=>{
+		var json = JSON.parse(res.diy.content);
+		$(".full_screen").show();
+		canvasMain.loadFont(json,function(){
+			canvasMain.loadFromJSON(res.diy.type,json,function(obj){
+				uploadImg(obj.blob,function(res){
+					var data = {
+						id:pid,
+						big_img_url:res.img_url
+					}
+					shopOrdersDoDiy(data,function(res){
+						location.reload(true);
+					});
+				});
+			});
+		});
+	});
+}
+//更新图片
+function shopOrdersDoDiy(data,cb){
+
+	$.post('/shop/orders/doDiy',data,function(res){
+		if(!res.success){
+			alert(res.msg);
+			return false;
+		}
+		typeof cb =="function" && cb(res);
+	});
+}
+function shopApiDiyItem(id,cb){
+	
+	$.post('/shop/api/diy/item',{id:id},function(res){
+		if(!res.success){
+			alert(res.msg);
+			return false;
+		}
+		typeof cb =="function" && cb(res);
+	});
+}
+//上传图片
+function uploadImg(file,cb){
+
+	let fd = new FormData();
+   	fd.append('image', file);
+   	$.ajax({
+   		url:'/shop/api/uploadImg',
+   		data:fd,
+   		type:'post',
+   		processData : false,
+   		contentType : false, 
+   		success:function(res) {
+    		if(!res.success){
+				alert(res.msg);
+				return false;
+			}
+			typeof cb =="function" && cb(res);
+   		}
+   	});
+}
+</script>
+##}

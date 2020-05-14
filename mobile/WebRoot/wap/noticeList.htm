@@ -1,0 +1,13 @@
+##tlayout("wap/layout.htm",{head_title:"商家公告"}){
+
+<div class="notice_list_new">
+	##for(_item in list!){
+		 <a href="/wap/notice?id=${_item.id!}" class="weui-media-box weui-media-box_appmsg">
+		    <div class="weui-media-box__bd">
+		        <h4 class="weui-media-box__title">${_item.title!}</h4>
+		        <p class="weui-media-box__desc">${_item.create_date!, dateFormat='yyyy-MM-dd HH:mm'}</p>
+		    </div>
+		</a>
+	##}
+</div>
+##}

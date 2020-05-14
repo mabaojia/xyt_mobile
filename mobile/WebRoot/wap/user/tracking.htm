@@ -1,0 +1,33 @@
+##tlayout("wap/layout.htm",{head_title:"快递详情"}){
+	
+<div class="trank_page">
+	<div class="track_top">
+		<img src="/wap/images/dizhi_index_icon.png" />
+        <div class="track_top_content">
+			<div class="track_top_item">
+				<span class="name">快递公司：</span>
+				<span>${orders.tracking_company!}</span>
+			</div>
+			<div class="track_top_item">
+				<span class="name">快递单号：</span>
+				<span>${orders.tracking_code!}</span>
+			</div>
+		</div>
+	</div>
+	<div class="track_bottom">
+		<div class="track_bottom_title">
+			<span>快递信息</span>
+		</div>
+		<div class="track_bottom_content">
+            ##for(_item in list!){
+            	<div class="track_inform_item">
+					<div class="track_inform_item_content">
+						<span>${_item.content!}</span>
+						<span>${_item.create_date!,dateFormat='yyyy-MM-dd HH:mm'}</span>
+					</div>
+	            </div>
+            ##}
+		</div>
+	</div>
+</div>
+##}

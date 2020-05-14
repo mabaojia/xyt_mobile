@@ -1,0 +1,65 @@
+##tlayout("wap/layout.htm",{head_title:"个人中心"}){
+
+<div class="page">
+    <div class="user_inform">
+        <img src="${user.img_url!}" />
+        <div class="name">${user.name!}</div>
+    </div>
+    <div class="order-related">
+        <ul class="uc-order list-horizon clearfix">
+            <li>
+                <a class="link clearfix relative link-topay" href="/wap/user/orders?status=0">
+                	##if(not_pay_number!=0){
+                		<span class="title-num">${not_pay_number!}</span>
+                	##}
+                    <p class="title-info c-black font-size-12">待付款</p>
+                </a>
+            </li>
+            <li>
+                <a class="link clearfix relative link-tosend" href="/wap/user/orders?status=1">
+                	##if(wait_tracking_number!=0){
+                		<span class="title-num">${wait_tracking_number!}</span>
+                	##}
+                    <p class="title-info c-black font-size-12">待发货</p>
+                </a>
+            </li>
+            <li>
+                <a class="link clearfix relative link-send" href="/wap/user/orders?status=2">
+                	##if(tracking_number!=0){
+                		<span class="title-num">${tracking_number!}</span>
+                	##}
+                    <p class="title-info c-black font-size-12">已发货</p>
+                </a>
+            </li>
+            <li>
+                <a class="link clearfix relative link-sign" href="/wap/user/orders?status=8">
+                	##if(received_number!=0){
+                		<span class="title-num">${received_number!}</span>
+                	##}
+                    <p class="title-info c-black font-size-12">已收货</p>
+                </a>
+            </li>
+        </ul>
+        <div class="weui-cells" style="margin-top: 0;">
+            <a class="weui-cell weui-cell_access" href="/wap/user/orders">
+                <div class="weui-cell__hd">
+                    <img src="/wap/images/dangdan_icon.png" />
+                </div>
+                <div class="weui-cell__bd"><p>我的订单</p></div>
+                <div class="weui-cell__ft"></div>
+            </a>
+        </div>
+        <div class="weui-cells">
+			<a class="weui-cell weui-cell_access" href="/wap/user/diy">
+				<div class="weui-cell__hd">
+					<img src="/wap/images/huarui_icon.png" alt="">
+				</div>
+				<div class="weui-cell__bd">
+					<p>我的定制</p>
+				</div>
+				<div class="weui-cell__ft"></div>
+			</a>
+		</div>
+    </div>
+</div>
+##}
