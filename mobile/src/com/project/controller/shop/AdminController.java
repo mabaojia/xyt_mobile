@@ -28,6 +28,7 @@ import com.project.model.Orders;
 import com.project.model.Shop;
 import com.project.model.ShopAdmin;
 import com.project.model.ShopAdminMenu;
+import com.project.model.UploadImageUpyun;
 import com.project.util.CodeUtil;
 import com.project.util.DateUtil;
 import com.project.util.MD5Util;
@@ -198,11 +199,31 @@ public class AdminController extends BaseController{
 			if(with_height[1] > 1000.0){
 				Thumbnails.of(getRequest().getSession().getServletContext().getRealPath("/") + path).scale(CodeUtil.getNumber(1000.0 / with_height[0])).toFile(getRequest().getSession().getServletContext().getRealPath("/") + path);
 			}
-        	JSONObject obj=new JSONObject();
-    		obj.put("error", 0);
-    		obj.put("url",path);
-    		renderJson(obj.toJSONString());
-    		return;
+			
+			try {
+	        	String fwqImgagepath = getRequest().getSession().getServletContext().getRealPath("/") + path;
+	        	String imagePath = UploadImageUpyun.testWriteFile(fwqImgagepath, type.replace("image/", ""));
+	        	ys_file.delete();
+		        if(imagePath.equals("")){
+		        	JSONObject obj = new JSONObject();
+		    		obj.put("error", 1);
+		    		obj.put("message", "请选择正确的图片格式");
+		    		renderJson(obj.toJSONString());
+		    		return;
+		        }else{
+		        	JSONObject obj=new JSONObject();
+		    		obj.put("error", 0);
+		    		obj.put("url",imagePath);
+		    		renderJson(obj.toJSONString());
+		    		return;
+		        }
+			} catch (Exception e) {	
+				JSONObject obj = new JSONObject();
+	    		obj.put("error", 1);
+	    		obj.put("message", "请选择正确的图片格式");
+	    		renderJson(obj.toJSONString());
+	    		return;
+			}
         }else{
         	JSONObject obj = new JSONObject();
     		obj.put("error", 1);
@@ -239,10 +260,28 @@ public class AdminController extends BaseController{
 		if(with_height[1] > 1000.0){
 			Thumbnails.of(getRequest().getSession().getServletContext().getRealPath("/") + path).scale(CodeUtil.getNumber(1000.0 / with_height[0])).toFile(getRequest().getSession().getServletContext().getRealPath("/") + path);
 		}
-	    setAttr("success", true);
-		setAttr("img_url", save_path + new_name);
-		renderJson();
-		return;
+		
+		try {
+        	String fwqImgagepath = getRequest().getSession().getServletContext().getRealPath("/") + path;
+        	String imagePath = UploadImageUpyun.testWriteFile(fwqImgagepath, type.replace("image/", ""));
+        	ys_file.delete();
+	        if(imagePath.equals("")){
+	        	setAttr("success", false);
+				setAttr("msg", "请选择正确图片格式");
+				renderJson();
+				return;
+	        }else{
+	        	setAttr("success", true);
+				setAttr("img_url", imagePath);
+				renderJson();
+				return;
+	        }
+		} catch (Exception e) {	
+			setAttr("success", false);
+			setAttr("msg", "请选择正确图片格式");
+			renderJson();
+			return;
+		}
 	}
 	/**
 	 * 

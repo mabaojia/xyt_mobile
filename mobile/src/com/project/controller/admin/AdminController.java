@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.UUID;
 
 import net.coobird.thumbnailator.Thumbnails;
-
 import com.alibaba.fastjson.JSONObject;
 import com.jfinal.aop.Before;
 import com.jfinal.aop.ClearInterceptor;
@@ -27,6 +26,7 @@ import com.project.model.Admin;
 import com.project.model.AdminMenu;
 import com.project.model.Menu;
 import com.project.model.Orders;
+import com.project.model.UploadImageUpyun;
 import com.project.model.User;
 import com.project.util.CodeUtil;
 import com.project.util.DateUtil;
@@ -139,11 +139,31 @@ public class AdminController extends BaseController{
 			if(with_height[1] > 1000.0){
 				Thumbnails.of(getRequest().getSession().getServletContext().getRealPath("/") + path).scale(CodeUtil.getNumber(1000.0 / with_height[0])).toFile(getRequest().getSession().getServletContext().getRealPath("/") + path);
 			}
-			JSONObject object=new JSONObject();
-			object.put("error", 0);
-			object.put("url", path);
-    		renderJson(object.toJSONString());
-    		return;
+			
+			try {
+	        	String fwqImgagepath = getRequest().getSession().getServletContext().getRealPath("/") + path;
+	        	String imagePath = UploadImageUpyun.testWriteFile(fwqImgagepath, type.replace("image/", ""));
+	        	ys_file.delete();
+		        if(imagePath.equals("")){
+		        	JSONObject object=new JSONObject();
+		        	object.put("error", 1);
+		        	object.put("message", "请选择正确的图片格式");
+		    		renderJson(object.toJSONString());
+		    		return;
+		        }else{
+		        	JSONObject object=new JSONObject();
+					object.put("error", 0);
+					object.put("url", imagePath);
+		    		renderJson(object.toJSONString());
+		    		return;
+		        }
+			} catch (Exception e) {	
+				JSONObject object=new JSONObject();
+	        	object.put("error", 1);
+	        	object.put("message", "请选择正确的图片格式");
+	    		renderJson(object.toJSONString());
+	    		return;
+			}
         }else{
         	JSONObject object=new JSONObject();
         	object.put("error", 1);
@@ -160,7 +180,7 @@ public class AdminController extends BaseController{
 	 * 联系方式：137-9192-7167
 	 * 技术QQ：2511251392
 	 */
-	public void uploadImg() throws Exception{
+	public void uploadImg() throws Exception {
 		
 		String save_path="/static/image/" + DateUtil.formatDate(new Date(), "yyyyMMdd")+"/";
 		File file=new File(getRequest().getSession().getServletContext().getRealPath("/") + save_path);  
@@ -181,10 +201,28 @@ public class AdminController extends BaseController{
 			if(with_height[1] > 1000.0){
 				Thumbnails.of(getRequest().getSession().getServletContext().getRealPath("/") + path).scale(CodeUtil.getNumber(1000.0 / with_height[0])).toFile(getRequest().getSession().getServletContext().getRealPath("/") + path);
 			}
-		    setAttr("success", true);
-			setAttr("img_url", path);
-			renderJson();
-			return;
+			
+	        try {
+	        	String fwqImgagepath = getRequest().getSession().getServletContext().getRealPath("/") + path;
+	        	String imagePath = UploadImageUpyun.testWriteFile(fwqImgagepath, type.replace("image/", ""));
+	        	ys_file.delete();
+		        if(imagePath.equals("")){
+		        	setAttr("success", false);
+					setAttr("msg", "请选择正确图片格式");
+					renderJson();
+					return;
+		        }else{
+		        	setAttr("success", true);
+					setAttr("img_url", imagePath);
+					renderJson();
+					return;
+		        }
+			} catch (Exception e) {	
+				setAttr("success", false);
+				setAttr("msg", "请选择正确图片格式");
+				renderJson();
+				return;
+			}
 		}else{
 			setAttr("success", false);
 			setAttr("msg", "请选择正确图片格式");

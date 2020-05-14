@@ -17,6 +17,7 @@ import com.project.model.Background;
 import com.project.model.Brand;
 import com.project.model.Material;
 import com.project.model.Type;
+import com.project.model.UploadImageUpyun;
 import com.project.util.DateUtil;
 
 /**
@@ -73,10 +74,29 @@ public class CommonController extends BaseController{
 	 		System.out.println("该图片dpi为：" + imageInfo.getPhysicalHeightDpi());
 	 		setAttr("dpi", imageInfo.getPhysicalHeightDpi());
 	    }
-	    setAttr("success", true);
-		setAttr("img_url", save_path + new_name);
-		renderJson();
-		return;
+	    String path = save_path + new_name;
+	    
+	    try {
+        	String fwqImgagepath = getRequest().getSession().getServletContext().getRealPath("/") + path;
+        	String imagePath = UploadImageUpyun.testWriteFile(fwqImgagepath, type.replace("image/", ""));
+        	rename_file.delete();
+	        if(imagePath.equals("")){
+	        	setAttr("success", false);
+				setAttr("msg", "请选择正确图片格式");
+				renderJson();
+				return;
+	        }else{
+	        	setAttr("success", true);
+				setAttr("img_url", imagePath);
+				renderJson();
+				return;
+	        }
+		} catch (Exception e) {	
+			setAttr("success", false);
+			setAttr("msg", "请选择正确图片格式");
+			renderJson();
+			return;
+		}
 	}
 	/**
 	 * 

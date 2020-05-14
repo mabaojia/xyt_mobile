@@ -41,6 +41,7 @@ import com.project.model.Notice;
 import com.project.model.Orders;
 import com.project.model.ShoppingCart;
 import com.project.model.Type;
+import com.project.model.UploadImageUpyun;
 import com.project.util.DateUtil;
 import com.project.weixin.pay.GetWxOrderno;
 import com.project.weixin.pay.RequestHandler;
@@ -518,9 +519,27 @@ public class CommonController extends ApiController{
 	    String new_name=UUID.randomUUID().toString().replace("-", "") + "." + type.replace("image/", "").replace("+xml", "");
 	    rename_file.renameTo(new File(getRequest().getSession().getServletContext().getRealPath("/") + save_path + new_name));
 	    String path=save_path + new_name;
-	    setAttr("success", true);
-		setAttr("img_url", path);
-		renderJson();
-		return;
+	    
+	    try {
+        	String fwqImgagepath = getRequest().getSession().getServletContext().getRealPath("/") + path;
+        	String imagePath = UploadImageUpyun.testWriteFile(fwqImgagepath, type.replace("image/", ""));
+        	rename_file.delete();
+	        if(imagePath.equals("")){
+	        	setAttr("success", false);
+				setAttr("msg", "请选择正确图片格式");
+				renderJson();
+				return;
+	        }else{
+	        	setAttr("success", true);
+				setAttr("img_url", imagePath);
+				renderJson();
+				return;
+	        }
+		} catch (Exception e) {	
+			setAttr("success", false);
+			setAttr("msg", "请选择正确图片格式");
+			renderJson();
+			return;
+		}
 	}
 }

@@ -1,9 +1,9 @@
 #数据库地址
 jdbcUrl = jdbc:mysql://127.0.0.1/mobile?useUnicode=true&characterEncoding=UTF-8
 #数据库账号
-user = 123456
+user = root
 #数据库密码
-password = 123456
+password = 
 
 #基础地址
 wxUrl = http://www.diy135.com

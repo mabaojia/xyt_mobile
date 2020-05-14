@@ -17,6 +17,7 @@ import com.project.model.Background;
 import com.project.model.Brand;
 import com.project.model.Material;
 import com.project.model.Type;
+import com.project.model.UploadImageUpyun;
 import com.project.util.DateUtil;
 
 /**
@@ -67,16 +68,36 @@ public class CommonController extends BaseController{
 	    File rename_file=uploadFile.getFile();
 	    String new_name=UUID.randomUUID().toString().replace("-", "") + "." + type.replace("image/", "").replace("+xml", "");
 	    rename_file.renameTo(new File(getRequest().getSession().getServletContext().getRealPath("/") + save_path + new_name));
+	    String path = save_path + new_name;
+	    
 	    if(!type.contains("svg")){
 	    	ImageInfo imageInfo=Imaging.getImageInfo(new File(getRequest().getSession().getServletContext().getRealPath("/") + save_path + new_name));
 	 		System.out.println(imageInfo);
 	 		System.out.println("该图片dpi为：" + imageInfo.getPhysicalHeightDpi());
 	 		setAttr("dpi", imageInfo.getPhysicalHeightDpi());
 	    }
-	    setAttr("success", true);
-		setAttr("img_url", save_path + new_name);
-		renderJson();
-		return;
+	    
+	    try {
+        	String fwqImgagepath = getRequest().getSession().getServletContext().getRealPath("/") + path;
+        	String imagePath = UploadImageUpyun.testWriteFile(fwqImgagepath, type.replace("image/", ""));
+        	rename_file.delete();
+	        if(imagePath.equals("")){
+	        	setAttr("success", false);
+				setAttr("msg", "请选择正确图片格式");
+				renderJson();
+				return;
+	        }else{
+	        	setAttr("success", true);
+				setAttr("img_url", imagePath);
+				renderJson();
+				return;
+	        }
+		} catch (Exception e) {	
+			setAttr("success", false);
+			setAttr("msg", "请选择正确图片格式");
+			renderJson();
+			return;
+		}
 	}
 	/**
 	 * 
