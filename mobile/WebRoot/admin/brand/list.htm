@@ -1,0 +1,138 @@
+##tlayout("admin/layout.htm"){
+
+<div class="breadcrumbs">
+	##if(type==1){
+		<div class="col-xs-2 breadcrumbs_title">机型管理</div>
+	##}else if(type==2){
+		<div class="col-xs-2 breadcrumbs_title">服装管理</div>
+	##}else if(type==3){
+		<div class="col-xs-2 breadcrumbs_title">雕刻管理</div>
+	##}else if(type==4){
+		<div class="col-xs-2 breadcrumbs_title">礼品管理</div>
+	##}
+	<div class="col-xs-10" style="text-align: right;">
+		<form action="/admin/brand/index" method="post" id="search_form">
+			<select name="sid" style="width: 100px;">
+				<option value="">全部商家</option>
+				 	##for(_item in shop_list){
+				 		<option value="${_item.id!}">${_item.title!}</option>
+				 	##}
+			</select>
+			<button class="btn btn-sm" type="button" onclick="$(this).parent().submit();" style="vertical-align: top;">确定</button>
+			<input type="hidden" name="type" value="${type!}" />
+		</form>		
+	</div>
+</div>
+<div class="page-content">
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="table-responsive">
+				<table class="table table-striped table-bordered table-hover">
+					<thead>
+						<tr>
+							<th style="width: 25px"><input type="checkbox" id="checkAll"/></th>
+							<th>标题</th>
+							<th>排序</th>
+							<th style="width: 60%;">下级管理</th>
+							<th>商家</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody id="checklist">
+						##for(_item in results.list!){
+						<tr>
+							<td><input type="checkbox" name="bids" value="${_item.id!}"/></td>
+							<td>${_item.title!}</td>
+							<td>${_item.idx!}</td>
+							<td>
+								##for(_each in _item.brand_list!){
+									<div style="height: 25px;line-height: 25px;width: 25%;float: left;">
+										${_each.title!}
+										##if(_each.status==1){
+											<span style="margin-left: 5px;">√</span>
+										##}else{
+											<span style="margin-left: 5px;">×</span>
+										##}
+									</div>
+								##}
+							</td>
+							<td>${_item.shop_title!}</td>
+							<td style="width:100px;">
+								<div class="btn-group">
+									<button class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown">
+										操作<span class="icon-caret-down icon-on-right"></span>
+									</button>
+									<ul class="dropdown-menu dropdown-info pull-right">
+										<li><a href="/admin/brand/list_1?id=${_item.id!}">下级管理</a></li>
+										<li><a href="javascript:changeStatus(${_item.id!}, 9, '删除')">删除</a></li>
+									</ul>
+								</div>
+							</td>
+						</tr>
+						##}
+						<tr>
+							<td></td>
+							<td colspan="6"><a href="javascript:changeStatusAll(9, '批量删除')">批量删除</a></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			##if(totalPage>1){
+				<div class="fenye">
+					<#_pagination page="${results!}" params="sid,type">
+						<ul id="Pagination"></ul>
+					</#_pagination>
+				</div>
+			##}
+		</div>
+	</div>
+</div>
+<script>
+$(document).ready(function(){
+	
+	$("select[name='sid']").val("${sid!}");
+});
+$(document).ready(function(){
+	
+	$("#checkAll").click(function(){
+		if($(this).is(':checked')){
+			$("#checklist").find('input').each(function(){
+				$(this).prop("checked", true);
+			});
+		}else{
+			$("#checklist").find('input').each(function(){
+				$(this).prop("checked", false);
+			});
+		}
+	});
+});
+function changeStatus(id, status, msg){
+	
+	if(confirm("确定要" + msg + "该条记录吗？")){
+		$.post("/admin/brand/changeStatus",{id:id,status:status},function(data){
+			alert(data.msg);
+			if(data.success){
+				location.reload(true);
+			}
+		});
+	}
+}
+function changeStatusAll(status, msg){
+	
+	if(confirm("确定要"+ msg+ "吗？")){
+		var bids=",";
+		$("#checklist").find('input').each(function(){
+			if($(this).prop("checked")){
+				bids+=$(this).val() + ",";
+			}
+		});
+		$.post("/admin/brand/changeStatusAll", {bids:bids, status:status}, function(data){
+			alert(data.msg);
+			if(data.success){
+				location.reload(true);
+			}
+		});
+	}
+}
+</script>
+##}

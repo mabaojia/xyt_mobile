@@ -1,0 +1,11 @@
+##tlayout("wap/layout.htm",{head_title:"公告详情"}){
+
+<style>
+body{
+	background: #fff;
+}
+</style>
+<div class="article_title">${notice.title!}</div>
+<div class="article_time">${notice.create_date!,dateFormat='yyyy-MM-dd HH:mm'}</div>
+<div class="article_content">${notice.content!}</div>
+##}

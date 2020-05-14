@@ -1,0 +1,43 @@
+##tlayout("wap/layout.htm",{head_title:"品牌型号"}){
+
+<div class="head_w map_head">
+	<span>品牌型号</span>
+</div>
+<div class="classify">
+	<div class="classify_a">
+		##for(_item in list!){
+			##if(_itemLP.index==1){
+				<div class="clothing examine" onclick="changeKind(${_item.id!}, this)">
+					<b>${_item.title!}</b>
+				</div>
+			##}else{
+				<div class="clothing" onclick="changeKind(${_item.id!}, this)">
+					<b>${_item.title!}</b>
+				</div>
+			##}
+		##}
+	</div>
+	<div class="classify_e">
+		##for(_item in list!){
+			<div class="kind" id="kind_${_item.id!}">
+				<div class="kind_text_name_w">
+					<div class="model_w">
+						##for(_each in _item.brand_list!){
+							<a href="/wap/diy/index?diyId=${_each.diy.id!}&type=${type!}"><div class="model_a">${_each.title!}</div></a>
+						##}
+					</div>
+				</div>
+			</div>
+		##}
+	</div>
+</div>
+<script>
+function changeKind(id, object){
+	
+	$(object).parent().find("div").removeClass("examine");
+	$(object).addClass("examine");
+	$(".kind").hide();
+	$("#kind_" + id).show();
+}
+</script>
+##}

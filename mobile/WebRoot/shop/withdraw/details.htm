@@ -1,0 +1,44 @@
+##tlayout("shop/layout.htm"){
+
+<div class="breadcrumbs">
+	<div class="col-xs-12 breadcrumbs_title">提现明细</div>
+</div>
+<div class="page-content">
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="table-responsive">
+				<table class="table table-striped table-bordered table-hover">
+					<thead>
+						<tr>
+							<th>时间</th>
+							<th>金额</th>
+							<th>状态</th>
+							<th style="width:60%">备注</th>
+						</tr>
+					</thead>
+					<tbody>
+						##for(_item in list!){
+						<tr>
+							<td>${_item.create_date!,dateFormat='yyyy-MM-dd HH:mm'}</td>
+							<td>${_item.account!}</td>
+							<td>
+								##if(_item.status==0){
+									待审核
+								##}else if(_item.status==1){
+									已提现
+								##}else if(_item.status==2){
+									待提现
+								##}else{
+									未入账
+								##}
+							</td>
+							<td>${_item.content!}</td>
+						</tr>
+						##}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+##}

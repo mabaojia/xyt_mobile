@@ -1,0 +1,11 @@
+##tlayout("wap/layout.htm",{head_title:"文章详情"}){
+
+<style>
+body{
+	background: #fff;
+}
+</style>
+<div class="article_title">${article.title!}</div>
+<div class="article_time">${article.create_date!,dateFormat='yyyy-MM-dd HH:mm'}</div>
+<div class="article_content">${article.content!}</div>
+##}

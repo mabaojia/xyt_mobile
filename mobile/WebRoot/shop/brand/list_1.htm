@@ -1,0 +1,218 @@
+##tlayout("shop/layout.htm"){
+
+<div class="breadcrumbs">
+	##if(type==1){
+		<div class="col-xs-2 breadcrumbs_title">机型管理</div>
+	##}else if(type==2){
+		<div class="col-xs-2 breadcrumbs_title">服装管理</div>
+	##}else if(type==3){
+		<div class="col-xs-2 breadcrumbs_title">雕刻管理</div>
+	##}else if(type==4){
+		<div class="col-xs-2 breadcrumbs_title">礼品管理</div>
+	##}
+	<div class="col-xs-10" style="text-align: right;">
+		<a class="btn btn-info btn-sm" href="javascript:showAlert('/shop/brand/add?id=${brand.id!}&type=${type!}')">+添加</a>
+	</div>
+</div>
+<div class="page-content">
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="table-responsive">
+				<table class="table table-striped table-bordered table-hover">
+					<thead>
+						<tr>
+							<th style="width: 25px;"><input type="checkbox" id="checkAll"/></th>
+							<th>标题</th>
+							<th>排序</th>
+							##if(type==1){
+								<th style="width: 10%;">手机壳</th>
+								<th style="width: 10%;">关联商品</th>
+								<th style="width: 10%;">手机膜</th>
+								<th style="width: 10%;">关联商品</th>
+							##}else{
+								<th style="width: 15%;">定制模板</th>
+								<th style="width: 15%;">关联商品</th>
+							##}
+							<th>状态</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody id="checklist">
+						##for(_item in list!){
+						<tr>
+							<td><input type="checkbox" name="bids" value="${_item.id!}"/></td>
+							<td>${_item.title!}</td>
+							<td>${_item.idx!}</td>
+							##if(type==1){
+								<td>
+									##if(_item.diys_1==1){
+										<a href="/shop/diy/index.htm?brandId=${_item.id!}&diyId=${_item.diy_1.id!}">${_item.diy_1.title!}</a>
+									##}
+								</td>
+								<td>
+									##if(_item.diys_1==1){
+										<a href="/shop/goods/edit?id=${_item.goods_1.id!}">${_item.goods_1.title!}</a>
+									##}
+								</td>
+								<td>
+									##if(_item.diys_2==1){
+										<a href="/shop/diy/index.htm?brandId=${_item.id!}&diyId=${_item.diy_2.id!}">${_item.diy_2.title!}</a>
+									##}
+								</td>
+								<td>
+									##if(_item.diys_2==1){
+										<a href="/shop/goods/edit?id=${_item.goods_2.id!}">${_item.goods_2.title!}</a>
+									##}
+								</td>
+							##}else{
+								<td>
+									##if(_item.diys==1){
+										<a href="/shop/diy/index.htm?brandId=${_item.id!}&diyId=${_item.diy.id!}">${_item.diy.title!}</a>
+									##}
+								</td>
+								<td>
+									##if(_item.diys==1){
+										<a href="/shop/goods/edit?id=${_item.goods.id!}">${_item.goods.title!}</a>
+									##}
+								</td>
+							##}
+							<td>
+								##if(_item.status==0){
+									禁用
+								##}else{
+									启用
+								##}
+							</td>
+							<td style="width:100px;">
+								<div class="btn-group">
+									<button class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown">
+										操作<span class="icon-caret-down icon-on-right"></span>
+									</button>
+									<ul class="dropdown-menu dropdown-info pull-right">
+										##if(type==1){
+											##if(_item.diys_1==1){
+												<li><a href="/shop/diy/index.htm?brandId=${_item.id!}&diyId=${_item.diy_1.id!}">手机壳</a></li>
+												<li><a href="javascript:showAlert('/shop/diy/goods?id=${_item.diy_1.id!}')">关联商品</a></li>
+												<li><a href="javascript:changeDiyStatus(${_item.diy_1.id!}, 9, '删除模板')">删除模板</a></li>
+											##}else{
+												<li><a href="/shop/diy/index.htm?brandId=${_item.id!}&type=1">手机壳</a></li>
+											##}
+											##if(_item.diys_2==1){
+												<li><a href="/shop/diy/index.htm?brandId=${_item.id!}&diyId=${_item.diy_2.id!}">手机膜</a></li>
+												<li><a href="javascript:showAlert('/shop/diy/goods?id=${_item.diy_2.id!}')">关联商品</a></li>
+												<li><a href="javascript:changeDiyStatus(${_item.diy_2.id!}, 9, '删除模板')">删除模板</a></li>
+											##}else{
+												<li><a href="/shop/diy/index.htm?brandId=${_item.id!}&type=2">手机膜</a></li>
+											##}
+										##}else{
+											##if(_item.diys==1){
+												<li><a href="/shop/diy/index.htm?brandId=${_item.id!}&diyId=${_item.diy.id!}">定制模板</a></li>
+												<li><a href="javascript:showAlert('/shop/diy/goods?id=${_item.diy.id!}')">关联商品</a></li>
+												<li><a href="javascript:changeDiyStatus(${_item.diy.id!}, 9, '删除模板')">删除模板</a></li>
+											##}else{
+												<li><a href="/shop/diy/index.htm?brandId=${_item.id!}&type=${_item.type + 1}">定制模板</a></li>
+											##}
+										##}
+										<li><a href="javascript:showAlert('/shop/brand/edit?id=${_item.id!}')">编辑</a></li>
+										##if(_item.status==1){
+											<li><a href="javascript:changeStatus(${_item.id!}, 0, '禁用')">禁用</a></li>
+										##}else{
+											<li><a href="javascript:changeStatus(${_item.id!}, 1, '启用')">启用</a></li>
+										##}
+										<li><a href="javascript:changeStatus(${_item.id!}, 9, '删除')">删除</a></li>
+									</ul>
+								</div>
+							</td>
+						</tr>
+						##}
+						<tr>
+							<td></td>
+							<td colspan="8">
+								<a href="javascript:changeStatusAll(1, '全部启用')">批量启用</a>
+								 | 
+								<a href="javascript:changeStatusAll(0, '全部禁用')">批量禁用</a>
+								 | 
+								<a href="javascript:changeStatusAll(9, '全部删除')">批量删除</a>
+								##if(type==1){
+									 |
+									<a href="javascript:goodsAll(1, '批量关联手机壳商品')">批量关联手机壳商品</a>
+									 |
+									<a href="javascript:goodsAll(2, '批量关联手机膜商品')">批量关联手机膜商品</a>
+								##}else{
+									 |
+									<a href="javascript:goodsAll(${type + 1}, '批量关联定制模板商品')">批量关联定制模板商品</a>
+								##}
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+function changeStatus(id, status, msg){
+	
+	if(confirm("确定要" + msg + "该条记录吗？")){
+		$.post("/shop/brand/changeStatus",{id:id,status:status},function(data){
+			alert(data.msg);
+			if(data.success){
+				location.reload(true);
+			}
+		});
+	}
+}
+function changeDiyStatus(id, status, msg){
+	
+	if(confirm("确定要" + msg + "该条记录吗？")){
+		$.post("/shop/diy/changeStatus",{id:id,status:status},function(data){
+			alert(data.msg);
+			if(data.success){
+				location.reload(true);
+			}
+		});
+	}
+}
+$(document).ready(function(){
+	
+	$("#checkAll").click(function(){
+		if($(this).is(':checked')){
+			$("#checklist").find('input').each(function(){
+				$(this).prop("checked", true);
+			});
+		}else{
+			$("#checklist").find('input').each(function(){
+				$(this).prop("checked", false);
+			});
+		}
+	});
+});
+function changeStatusAll(status, msg){
+	
+	if(confirm("确定要" + msg + "吗？")){
+		var bids=",";
+		$("#checklist").find('input').each(function(){
+			if($(this).prop("checked")){
+				bids+=$(this).val() + ",";
+			}
+		});
+		$.post("/shop/brand/changeStatusAll", {bids:bids, status:status}, function(data){
+			alert(data.msg);
+			if(data.success){
+				location.reload(true);
+			}
+		});
+	}
+}
+function goodsAll(type, msg){
+	
+	var bids=",";
+	$("#checklist").find('input').each(function(){
+		if($(this).prop("checked")){
+			bids+=$(this).val() + ",";
+		}
+	});
+	showAlert("/shop/brand/goodsAll?bids=" + bids + "&type=" + type);
+}
+</script>
+##}

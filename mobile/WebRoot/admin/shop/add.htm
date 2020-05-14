@@ -1,0 +1,136 @@
+<link rel="stylesheet" href="/admin/assets/css/bootstrap.min.css" />
+<link rel="stylesheet" href="/admin/assets/css/font-awesome.min.css" />
+<link rel="stylesheet" href="/admin/assets/css/ace.min.css" />
+<link rel="stylesheet" href="/admin/assets/css/ace-rtl.min.css" />
+<link rel="stylesheet" href="/admin/assets/css/ace-skins.min.css" />
+<link rel="stylesheet" href="/admin/css/style.css" />
+
+<script src="/admin/script/jquery.min.js"></script>
+<script src="/admin/script/jquery.form.js"></script>
+
+<!-- 文件上传所需要css和js -->
+<link rel="stylesheet" href="/shop/script/FileUpload/css/jquery.fileupload.css">
+<script type="text/javascript" src="/shop/script/FileUpload/jquery.iframe-transport.js"></script>
+<script type="text/javascript" src="/shop/script/FileUpload/vendor/jquery.ui.widget.js"></script>
+<script type="text/javascript" src="/shop/script/FileUpload/jquery.fileupload.js"></script>
+
+<div class="page-content" style="height:450px;overflow-y:scroll;">
+	<div class="page-header">
+		<h1>添加商家</h1>
+	</div>
+	<div class="row">
+		<div class="col-xs-12">
+			<form class="form-horizontal" action="/admin/shop/save" method="post" id="submit_form">
+				<div class="form-group">
+					<label class="col-xs-12 control-label"><span style="color: #f00">*</span>标题</label>
+					<div class="col-xs-12">
+						<input type="text" name="title" class="col-xs-10" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-12 control-label"><span style="color: #f00">*</span>负责人</label>
+					<div class="col-xs-12">
+						<input type="text" name="name" class="col-xs-10" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-12 control-label"><span style="color: #f00">*</span>微信号</label>
+					<div class="col-xs-12">
+						<input type="text" name="wx" class="col-xs-10" />
+					</div>
+				</div>
+				<div class="form-group">
+						<label class="col-xs-12 control-label"><span style="color: #f00">*</span>微信二维码</label>
+						<div class="col-xs-12">
+							<a href="javascript:void(0);" class="file">上传图片
+								<input type="file" class="autosize-transition form-control" name="image" id="uploadImg" style="overflow: hidden; word-wrap: break-word; resize: horizontal;border: 1px #ccc solid;" />
+							</a>
+							<div style="margin-top:5px;">
+								<img style="max-height: 80px;max-width: 80px;display: none;" id="img_url" />
+							</div>
+						</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-12 control-label"><span style="color: #f00">*</span>手机号</label>
+					<div class="col-xs-12">
+						<input type="text" name="mobile" class="col-xs-10" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-12 control-label"><span style="color: #f00">*</span>登录账号</label>
+					<div class="col-xs-12">
+						<input type="text" name="email" class="col-xs-10" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-12 control-label"><span style="color: #f00">*</span>登录密码</label>
+					<div class="col-xs-12">
+						<input type="text" name="password" class="col-xs-10" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-12 control-label"><span style="color: #f00">*</span>发货方式</label>
+					<div class="col-xs-12">
+						<select name="tracking" class="col-xs-10">
+							<option value="3">邮寄+自提</option>
+							<option value="1">邮寄</option>
+							<option value="2">自提</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-12 control-label"><span style="color: #f00">*</span>支付方式</label>
+					<div class="col-xs-12">
+						<select name="payment" class="col-xs-10">
+							<option value="3">微信支付+线下支付</option>
+							<option value="1">微信支付</option>
+							<option value="2">线下支付</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-12 control-label"><span style="color: #f00">*</span>详细地址</label>
+					<div class="col-xs-12">
+						<textarea class="col-xs-10" name="address" rows="5"></textarea>
+					</div>
+				</div>
+				<input type="hidden" name="wx_qrcode" />
+			</form>
+		</div>
+	</div>
+</div>
+<div style="width:100%;text-align: center;">
+	<button type="button" class="btn btn-info" onclick="submitForm()" style="padding:0px 5px;margin-top:5px;">
+		<i class="icon-ok bigger-110"></i>确定
+	</button>
+	&nbsp;&nbsp;
+	<button type="reset" class="btn" onclick="parent.hideAlert()" style="padding:0px 5px;margin-top:5px;">
+		<i class="icon-undo bigger-110"></i>取消
+	</button>
+</div>
+<script>
+$('#uploadImg').fileupload({
+    url: '/admin/uploadImg',
+    dataType: 'json',
+    done: function (e,data) { 
+    	var json = $.parseJSON(data.jqXHR.responseText); 
+    	if(json.success){
+    		$("#img_url").attr("src", json.img_url);
+    		$("#img_url").show();
+    		$("input[name='wx_qrcode']").val(json.img_url);
+        }else{
+        	alert(json.msg);
+        }
+    }
+});
+function submitForm(){
+	$('#submit_form').ajaxSubmit({
+		success:function (data){
+			alert(data.msg);
+			if(data.success){
+				parent.location.reload(true);
+			}
+		}
+	});
+}
+</script>

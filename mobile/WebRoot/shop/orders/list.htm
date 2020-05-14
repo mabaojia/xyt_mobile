@@ -1,0 +1,350 @@
+##tlayout("shop/layout.htm"){
+
+<script src="/shop/script/JsDatePicker/WdatePicker.js"></script>
+<script src="/shop/script/clipboard.min.js"></script>
+
+<div class="breadcrumbs">
+	<div class="col-xs-2 breadcrumbs_title" >订单列表</div>
+	<div class="col-xs-10" style="text-align: right;">
+		<form action="/shop/orders/index" method="post" id="submit_form">
+			<input type="text" placeholder="请输入订单号，收件人，联系方式" name="content" value="${content!}" style="height: 35px;width:300px;" />
+			<input type="text" placeholder="开始时间" name="startT" value="${startT!}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" style="height: 35px;width: 150px;" />
+			<input type="text" placeholder="结束时间" name="endT" value="${endT!}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" style="height: 35px;width: 150px;" />
+			<button class="btn btn-sm" onclick="submitForm('/shop/orders/index')" type="button" style="vertical-align: top;">确定</button>
+			<button class="btn btn-sm" onclick="submitForm('/shop/orders/export')" type="button" style="vertical-align: top;">导出</button>
+			<input type="hidden" name="status" value="${status!}" />
+			<input type="hidden" name="gid" value="${gid!}" />
+		</form>
+	</div>
+</div>
+<div class="page-content">
+	<div class="row">
+		<div class="col-xs-12">
+			<form action="javascript:void(0)" id="search_form" class="clearfix">
+				##if(exist("status")){
+					<label><a href="javascript:changeStatus('')" style="color: #000">全部</a></label>
+					##if(status==0){
+						<label class="cur"><a href="javascript:changeStatus(0)" style="color: #000">待付款</a></label>
+					##}else{
+						<label><a href="javascript:changeStatus(0)" style="color: #000">待付款</a></label>
+					##}
+					##if(status==1){
+						<label class="cur"><a href="javascript:changeStatus(1)" style="color: #000">待发货/待自提</a></label>
+					##}else{
+						<label><a href="javascript:changeStatus(1)" style="color: #000">待发货/待自提</a></label>
+					##}
+					##if(status==2){
+						<label class="cur"><a href="javascript:changeStatus(2)" style="color: #000">已发货/已自提</a></label>
+					##}else{
+						<label><a href="javascript:changeStatus(2)" style="color: #000">已发货/已自提</a></label>
+					##}
+					##if(status==8){
+						<label class="cur"><a href="javascript:changeStatus(8)" style="color: #000">已收货</a></label>
+					##}else{
+						<label><a href="javascript:changeStatus(8)" style="color: #000">已收货</a></label>
+					##}
+					##if(status==3){
+						<label class="cur"><a href="javascript:changeStatus(3)" style="color: #000">已完成</a></label>
+					##}else{
+						<label><a href="javascript:changeStatus(3)" style="color: #000">已完成</a></label>
+					##}
+				##}else{
+					<label class="cur"><a href="javascript:changeStatus('')" style="color: #000">全部</a></label>
+					<label><a href="javascript:changeStatus(0)" style="color: #000">待付款</a></label>
+					<label><a href="javascript:changeStatus(1)" style="color: #000">待发货/待自提</a></label>
+					<label><a href="javascript:changeStatus(2)" style="color: #000">已发货/已自提</a></label>
+					<label><a href="javascript:changeStatus(8)" style="color: #000">已收货</a></label>
+					<label><a href="javascript:changeStatus(3)" style="color: #000">已完成</a></label>
+				##}
+			</form>
+		</div>
+		<div class="col-xs-12 mb10">
+			<button type="button" class="btn btn-success" onclick="printAll(1);">批量打印手机壳</button>
+			<button type="button" class="btn btn-success" onclick="printAll(2);">批量打印手机膜</button>
+			<button type="button" class="btn btn-success" onclick="printAll(3);">批量打印服装</button>
+			<button type="button" class="btn btn-success" onclick="printAll(4);">批量打印雕刻</button>
+			<button type="button" class="btn btn-success" onclick="printAll(5);">批量打印礼品</button>
+			<button type="button" class="btn btn-success" onclick="printAllPhoto();">批量打印照片</button>
+			<button type="button" class="btn btn-success" onclick="downloadPicturesAll();">批量下载</button>
+		</div>
+		<div class="col-xs-12">
+			<div class="table-responsive">
+				<table class="table table-striped table-bordered table-hover">
+					<thead>
+						<tr>
+							<th style="width: 50px;"><input type="checkbox" id="checkAll" /></th>
+							<th>订单号</th>
+							<th style="width: 40%;">产品列表</th>
+							<th>总计/元</th>
+							<th>支付方式</th>
+							<th>发货方式</th>
+							<th>收件地址</th>
+							<th>状态</th>
+							<th>创建时间</th>
+						</tr>
+					</thead>
+					<tbody id="checklist">
+						##for(_item in results.list!){
+						<tr>
+							<td><input type="checkbox" name="oids" value="${_item.id!}" /></td>
+							<td><a href="/shop/orders/msg?id=${_item.id!}">${_item.code!}</a></td>
+							<td>
+								<table class="table table-striped table-bordered table-hover">
+									<thead>
+										<tr>
+											<th style="width: 40%">商品</th>
+											<th>品牌型号</th>
+											<th>规格</th>
+											<th>数量</th>
+										</tr>
+									</thead>
+									<tbody>
+									##for(_each in _item.goods_list!){
+									<tr class="item_goods">
+										<td>${_each.goods_title!}</td>
+										<td>
+											##if(_each.goods_source!=3){
+												${_each.item_parent.title!}->${_each.item_brand.title!}
+											##}
+										</td>
+										<td>${_each.goods_format_title!}</td>
+										<td>${_each.item_number!}</td>
+									</tr>
+									##}
+									</tbody>
+								</table>
+							</td>
+							<td>${_item.grand_total!} 元</td>
+							<td>
+								##if(_item.payment!=null && _item.payment!=""){
+									##if(_item.payment==1){
+										微信支付
+									##}else{
+										线下支付
+									##}
+								##}
+							</td>
+							<td>
+								##if(_item.tracking==1){
+									邮寄
+								##}else{
+									自提
+								##}
+							</td>
+							<td>
+								##if(_item.tracking==1){
+									<div>${_item.take_name!} | ${_item.take_telephone!}</div>
+									<div style="margin-top: 5px;">${_item.take_area_msg!} ${_item.take_address!}（${_item.take_post_code!}）</div>
+									<div style="margin-top: 5px"><a href="javascript:void(0)" onclick="copy(this)" content="${_item.take_name!} | ${_item.take_telephone!} | ${_item.take_area_msg!} ${_item.take_address!}（${_item.take_post_code!}）">双击复制地址</a></div>
+								##}else{
+									<div>${_item.take_name!} | ${_item.take_telephone!}</div>
+									<div style="margin-top: 5px"><a href="javascript:void(0)" onclick="copy(this)" content="${_item.take_name!} | ${_item.take_telephone!}">双击复制地址</a></div>
+								##}
+							</td>
+							<td>
+								##if(_item.closed==1){
+									已关闭
+								##}else{
+									##if(_item.status==0){
+										待付款
+									##}else if(_item.status==1){
+										##if(_item.tracking==1){
+											待发货
+										##}else{
+											待自提
+										##}
+									##}else if(_item.status==2){
+										##if(_item.tracking==1){
+											已发货
+										##}else{
+											已自提
+										##}
+									##}else if(_item.status==3){
+										已完成
+									##}else if(_item.status==8){
+										已收货
+									##}
+								##}
+							</td>
+							<td>${_item.create_date!,dateFormat='yyyy-MM-dd HH:mm'}</td>
+						</tr>
+						<tr>	
+							<td colspan="9">
+								<span class="left_td_tip">操作：</span>
+								<ul class="caozuo_ul">
+									##if(_item.closed==1){
+										<!-- 已关闭 -->
+										<li class="btn btn-primary btn-xs"><a href="/shop/orders/msg?id=${_item.id!}">订单详情</a></li>
+										<li class="btn btn-danger btn-xs"><a href="/shop/orders/print?id=${_item.id!}&type=1" target="_blank">打印手机壳</a></li>
+										<li class="btn btn-danger btn-xs" style="background-color: #25ab38 !important;border-color: #25ab38;"><a href="/shop/orders/print?id=${_item.id!}&type=2" target="_blank">打印手机膜</a></li>
+										<li class="btn btn-danger btn-xs" style="background-color: #8572f9 !important;border-color: #8572f9;"><a href="/shop/orders/print?id=${_item.id!}&type=3" target="_blank">打印服装</a></li>
+										<li class="btn btn-danger btn-xs" style="background-color: #db1ed0 !important;border-color: #db1ed0;"><a href="/shop/orders/print?id=${_item.id!}&type=4" target="_blank">打印雕刻</a></li>
+										<li class="btn btn-danger btn-xs" style="background-color: #a49fa4 !important;border-color: #a49fa4;"><a href="/shop/orders/print?id=${_item.id!}&type=5" target="_blank">打印礼品</a></li>
+										<li class="btn btn-danger btn-xs" style="background-color: #f2105b !important;border-color: #f2105b;"><a href="/shop/orders/printPhoto?id=${_item.id!}" target="_blank">打印照片</a></li>
+										<li class="btn btn-default btn-xs"><a href="javascript:deleted(${_item.id!})">删除</a></li>
+									##}else{
+										<li class="btn btn-primary btn-xs"><a href="/shop/orders/msg?id=${_item.id!}">订单详情</a></li>
+										<li class="btn btn-danger btn-xs"><a href="/shop/orders/print?id=${_item.id!}&type=1" target="_blank">打印手机壳</a></li>
+										<li class="btn btn-danger btn-xs" style="background-color: #25ab38 !important;border-color: #25ab38;"><a href="/shop/orders/print?id=${_item.id!}&type=2" target="_blank">打印手机膜</a></li>
+										<li class="btn btn-danger btn-xs" style="background-color: #8572f9 !important;border-color: #8572f9;"><a href="/shop/orders/print?id=${_item.id!}&type=3" target="_blank">打印服装</a></li>
+										<li class="btn btn-danger btn-xs" style="background-color: #db1ed0 !important;border-color: #db1ed0;"><a href="/shop/orders/print?id=${_item.id!}&type=4" target="_blank">打印雕刻</a></li>
+										<li class="btn btn-danger btn-xs" style="background-color: #a49fa4 !important;border-color: #a49fa4;"><a href="/shop/orders/print?id=${_item.id!}&type=5" target="_blank">打印礼品</a></li>
+										<li class="btn btn-danger btn-xs" style="background-color: #f2105b !important;border-color: #f2105b;"><a href="/shop/orders/printPhoto?id=${_item.id!}" target="_blank">打印照片</a></li>
+										##if(_item.status==0){
+											<!-- 待付款 -->
+											<li class="btn btn-warning btn-xs"><a href="javascript:showAlert('/shop/orders/editPrice?id=${_item.id!}')">订单改价</a></li>
+											##if(shop.payment==2 || shop.payment==3){
+												<li class="btn btn-success btn-xs"><a href="javascript:ordersPayment(${_item.id!})">订单已收款</a></li>
+											##}
+											<li class="btn btn-default btn-xs"><a href="javascript:closed(${_item.id!})">关闭</a></li>
+										##}else if(_item.status==1){
+											<!-- 待发货 -->
+											##if(_item.tracking==1){
+												<li class="btn btn-info btn-xs"><a href="javascript:showAlert('/shop/orders/addTracking?id=${_item.id!}')">订单发货</a></li>
+											##}else{
+												<li class="btn btn-info btn-xs"><a href="javascript:saveTracking(id=${_item.id!})">订单已自提</a></li>
+											##}
+											<li class="btn btn-default btn-xs"><a href="javascript:showAlert('/shop/orders/pwd?id=${_item.id!}')">订单退款</a></li>
+										##}else if(_item.status==2){
+											<!-- 已发货 -->
+											<li class="btn btn-default btn-xs"><a href="javascript:showAlert('/shop/orders/pwd?id=${_item.id!}')">订单退款</a></li>
+										##}else if(_item.status==3){
+											<!-- 已完成 -->
+										##}else if(_item.status==8){
+											<!-- 已收货 -->
+										##}
+									##}
+								</ul>
+							</td>
+						</tr>
+						##}
+					</tbody>
+				</table>
+			</div>
+			##if(totalPage>1){
+				<div class="fenye">
+					<#_pagination page="${results!}" params="content,status,gid,startT,endT">
+						<ul id="Pagination"></ul>
+					</#_pagination>
+				</div>
+			##}
+		</div>
+	</div>
+</div>
+<script>
+function copy(object){
+	
+	var content = $(object).attr("content");
+	var clipboard = new Clipboard(object, {
+		text: function() {
+			return content;
+		}
+	});
+	clipboard.on('success', function(e) {
+		alert("复制成功");
+	});
+	clipboard.on('error', function(e) {
+		alert("复制失败");
+	});
+}
+function changeStatus(status){
+	
+	$("input[name='status']").val(status);
+	submitForm('/shop/orders/index');
+}
+function deleted(id){
+	
+	if(confirm("确定要删除该条记录吗？")){
+		$.post("/shop/orders/deleted",{id:id},function(data){
+			alert(data.msg);
+			if(data.success){
+				location.reload(true);
+			}
+		});
+	}
+}
+function closed(id){
+	
+	if(confirm("确定要关闭该条记录吗？")){
+		$.post("/shop/orders/closed",{id:id},function(data){
+			alert(data.msg);
+			if(data.success){
+				location.reload(true);
+			}
+		});
+	}
+}
+function saveTracking(){
+	
+	if(confirm("确定要订单已自提该条记录吗？")){
+		$.post("/shop/orders/saveTracking",{id:id},function(data){
+			alert(data.msg);
+			if(data.success){
+				location.reload(true);
+			}
+		});
+	}
+}
+function ordersPayment(id){
+	
+	if(confirm("确定要订单已收款该条记录吗？")){
+		$.post("/shop/orders/ordersPayment",{id:id},function(data){
+			alert(data.msg);
+			if(data.success){
+				location.reload(true);
+			}
+		});
+	}
+}
+$(function(){
+	
+	/*全选/取消*/
+	$("#checkAll").click(function(){
+		if($(this).is(':checked')){
+			$("#checklist").find('input').each(function(){
+				$(this).prop("checked", true);
+			});
+		}else{
+			$("#checklist").find('input').each(function(){
+				$(this).prop("checked", false);
+			});
+		}
+	});
+});
+function printAll(type){
+	
+	var oids=",";
+	$("#checklist").find('input').each(function(){
+		if($(this).prop("checked")){
+			oids+=$(this).val() + ",";
+		}
+	});
+	window.open("/shop/orders/printAll?oids=" + oids + "&type=" + type, '_blank');
+}
+function printAllPhoto(){
+	
+	var oids=",";
+	$("#checklist").find('input').each(function(){
+		if($(this).prop("checked")){
+			oids+=$(this).val() + ",";
+		}
+	});
+	window.open("/shop/orders/printAllPhoto?oids=" + oids, '_blank');
+}
+function downloadPicturesAll(){
+	
+	var oids=",";
+	$("#checklist").find('input').each(function(){
+		if($(this).prop("checked")){
+			oids+=$(this).val() + ",";
+		}
+	});
+	window.open("/shop/orders/downloadPicturesAll?oids=" + oids, '_blank');
+}
+function submitForm(url){
+	
+	$("#submit_form").attr("action", url);
+	$("#submit_form").submit();
+}
+</script>
+##}

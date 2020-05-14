@@ -1,0 +1,230 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title> </title>
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">
+	<link rel="stylesheet" type="text/css" href="/shop/orders/print/print.css">
+	<script type="text/javascript" src="/shop/script/jquery.min.js"></script>
+		<script type="text/javascript" src="/shop/script/jquery-migrate-1.2.1.min.js"></script>
+
+	<script type="text/javascript" src="/shop/orders/print/jquery.jqprint-0.3.js"></script>
+	<script type="text/javascript" src="/shop/script/youziku.client.min.js"></script>
+
+	<style media="print">
+      
+
+    @page {
+          size: auto;
+          margin: 0mm;
+    }
+
+    .print-content {
+        display: block;
+        width: 100%;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        height: 100%;
+    }
+
+    @page :left {
+        margin-left: 2cm;
+    }
+
+    img {
+        display: inline-block;
+        /*border: 1px solid #000;*/
+        vertical-align: bottom;
+    }
+</style>
+
+
+</head>
+<body>
+<div id="print-content" class="print-content" media="print">
+	<div class="print_content_body clearfix">
+		##for(_item in goods_list!){
+			##if(_item.diy_id!=null &&_item.diy_id!=""){
+				##if(_item.diy.big_img_url!=null && _item.diy.big_img_url!=""){
+					<div class="print_content_body_item">
+						<div class="title">
+							${_item.parent.title!}->${_item.brand.title!}
+							##if(_item.diy.type==1){
+                  				（手机壳）
+                  			##}else if(_item.diy.type==2){
+                  				（手机膜）
+                  			##}else if(_item.diy.type==3){
+                  				（服装）
+                  			##}else if(_item.diy.type==4){
+                  				（雕刻）
+                  			##}else if(_item.diy.type==5){
+                  				（礼品）
+                  			##}
+						</div>
+						<img src="${_item.diy.big_img_url!}"  style="width:${_item.diy.width}cm;height:${_item.diy.height}cm" />
+					</div>
+				##}
+			##}
+			##if(_item.picture_list!=null &&_item.picture_list.~size!=0){
+				##for(_each in _item.picture_list!){
+					<div class="print_content_body_item">
+						<div class="title">
+							${_item.goods_title!}
+							（${_item.goods_width!}mm * ${_item.goods_height!}mm）
+						</div>
+						<img src="${_each.img_url!}"  style="width:${_item.goods_width!}mm;height:${_item.goods_height!}mm" />
+					</div>
+				##}
+			##}
+		##}
+	</div>
+</div>
+
+<div class="print_preview_mark"></div>
+<div class="print_preview">
+	<div class="print_preview_title">下载检查</div>
+	<div class="print_preview_body clearfix">
+		##for(_item in goods_list!){
+			##if(_item.diy_id!=null &&_item.diy_id!=""){
+				##if(_item.diy.big_img_url!=null && _item.diy.big_img_url!=""){
+					<div class="print_preview_body_item">
+						<div class="title">
+							${_item.parent.title!}->${_item.brand.title!}
+							##if(_item.diy.type==1){
+                  				（手机壳）
+                  			##}else if(_item.diy.type==2){
+                  				（手机膜）
+                  			##}else if(_item.diy.type==3){
+                  				（服装）
+                  			##}else if(_item.diy.type==4){
+                  				（雕刻）
+                  			##}else if(_item.diy.type==5){
+                  				（礼品）
+                  			##}
+						</div>
+						<img src="${_item.diy.big_img_url!}" />
+					</div>
+				##}
+			##}
+			##if(_item.picture_list!=null &&_item.picture_list.~size!=0){
+				##for(_each in _item.picture_list!){
+					<div class="print_preview_body_item">
+						<div class="title">
+							${_item.goods_title!}
+							（${_item.goods_width!}mm * ${_item.goods_height!}mm）
+						</div>
+						<img src="${_each.img_url!}" />
+					</div>
+				##}
+			##}
+		##}
+	</div>
+	<div class="noPrint no-print" onclick="print()">下载</div>
+</div>
+<div class="full_screen">
+	<div class="spinner">
+		<div class="double-bounce1"></div>
+		<div class="double-bounce2"></div>
+	</div>
+</div>
+<script type="text/javascript" src="/shop/script/fabric.js"></script>
+<script type="text/javascript" src="/shop/script/canvaMain.js"></script>
+<script type="text/javascript">
+function print(){
+	
+   window.location.href="/shop/orders/doDownloadPicturesAll?oids=${oids!}";
+}
+$(document).ready(function(){
+	var idx=0;
+	##for(_item in goods_list!){
+		##if(_item.diy_id!=null &&_item.diy_id!=""){
+			##if(_item.diy.big_img_url==null || _item.diy.big_img_url==""){
+				idx++;
+			##}
+		##}
+	##}
+
+	var index=0;
+	##for(_item in goods_list!){
+		##if(_item.diy_id!=null &&_item.diy_id!=""){
+			##if(_item.diy.big_img_url==null || _item.diy.big_img_url==""){
+				loadDiy("${_item.diy.id!}", "${_item.id!}",()=>{
+					index ++;
+					if(index==idx){
+						$(".full_screen").hide();
+						location.reload(true);
+					}
+				});
+			##}
+		##}
+	##}
+});
+
+
+function loadDiy(id, pid,cb){
+	
+	shopApiDiyItem(id,(res)=>{
+		var json = JSON.parse(res.diy.content);
+		$(".full_screen").show();
+		canvasMain.loadFont(json,function(){
+			canvasMain.loadFromJSON(json,function(obj){
+				uploadImg(obj.blob,function(res){
+					var data = {
+						id:pid,
+						big_img_url:res.img_url
+					}
+					shopOrdersDoDiy(data,function(res){
+
+						typeof cb =="function" &&cb();
+					});
+				});
+			});
+		});
+	});
+}
+//更新图片
+function shopOrdersDoDiy(data,cb){
+
+	$.post('/shop/orders/doDiy',data,function(res){
+		if(!res.success){
+			alert(res.msg);
+			return false;
+		}
+		typeof cb =="function" && cb(res);
+	});
+}
+function shopApiDiyItem(id,cb){
+	
+	$.post('/shop/api/diy/item',{id:id},function(res){
+		if(!res.success){
+			alert(res.msg);
+			return false;
+		}
+		typeof cb =="function" && cb(res);
+	});
+}
+//上传图片
+function uploadImg(file,cb){
+
+	let fd = new FormData();
+   	fd.append('image', file);
+   	$.ajax({
+   		url:'/shop/api/uploadImg',
+   		data:fd,
+   		type:'post',
+   		processData : false,
+   		contentType : false, 
+   		success:function(res) {
+    		if(!res.success){
+				alert(res.msg);
+				return false;
+			}
+			typeof cb =="function" && cb(res);
+   		}
+   	});
+}
+</script>
+</body>
+</html>

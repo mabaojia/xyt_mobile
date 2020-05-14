@@ -1,0 +1,83 @@
+##tlayout("wap/layout.htm",{head_title:"我的定制"}){
+	
+<div class="screen_hurdle">
+	##if(exist("type")){
+		<div class="screen_li"><span><a href="/wap/user/diy">全部</a></span></div>
+	##}else{
+		<div class="screen_li"><span class="select"><a href="/wap/user/diy">全部</a></span></div>
+	##}
+	##if(exist("type") && type==1){
+		<div class="screen_li"><span class="select"><a href="/wap/user/diy?type=1">手机壳</a></span></div>
+	##}else{
+		<div class="screen_li"><span><a href="/wap/user/diy?type=1">手机壳</a></span></div>
+	##}
+	##if(exist("type") && type==2){
+		<div class="screen_li"><span class="select"><a href="/wap/user/diy?type=2">手机膜</a></span></div>
+	##}else{
+		<div class="screen_li"><span><a href="/wap/user/diy?type=2">手机膜</a></span></div>
+	##}
+	##if(exist("type") && type==3){
+		<div class="screen_li"><span class="select"><a href="/wap/user/diy?type=3">服装</a></span></div>
+	##}else{
+		<div class="screen_li"><span><a href="/wap/user/diy?type=3">服装</a></span></div>
+	##}
+	##if(exist("type") && type==4){
+		<div class="screen_li"><span class="select"><a href="/wap/user/diy?type=4">雕刻</a></span></div>
+	##}else{
+		<div class="screen_li"><span><a href="/wap/user/diy?type=4">雕刻</a></span></div>
+	##}
+	##if(exist("type") && type==5){
+		<div class="screen_li"><span class="select"><a href="/wap/user/diy?type=5">礼品</a></span></div>
+	##}else{
+		<div class="screen_li"><span><a href="/wap/user/diy?type=5">礼品</a></span></div>
+	##}
+</div>
+<div style="height: 45px;"></div>
+<div class="commodity_list_all">
+	##for(_item in results.list!){
+		<div class="commodity_list_all_li">
+			##if(_item.type==1){
+				<div class="tab">手机壳</div>
+			##}else if(_item.type==2){
+				<div class="tab cur">手机膜</div>
+			##}else if(_item.type==3){
+				<div class="tab cur">服装</div>
+			##}else if(_item.type==4){
+				<div class="tab cur">雕刻</div>
+			##}else if(_item.type==5){
+				<div class="tab cur">礼品</div>
+			##}
+			<div class="list_li_master_map">
+				<a href="/wap/goods?code=${_item.goods.code!}&dcode=${_item.code!}"><img src="${_item.img_url!}" /></a>
+			</div>
+			<div class="li_txt_master_map">
+				<div class="name"><a href="/wap/goods?code=${_item.goods.code!}&dcode=${_item.code!}">${_item.goods.title!}</a></div>
+				<div class="li_txt_master_minute">
+					<div><span class="li_txt_price">￥<span>${_item.goods.price!}</span></span></div>
+				</div>
+				<div><a href="javascript:deleteDiy(${_item.id!})" class="del_btn">删除</a></div>
+			</div>
+		</div>
+	##}
+</div>
+##if(totalPage>1){
+	<div class="fenye">
+		<#_page page="${results!}" params="type">
+			<ul id="Pagination"></ul>
+		</#_page>
+	</div>
+##}
+<script>
+function deleteDiy(id){
+	
+	if(confirm("确定要删除当前模板？")){
+		$.post("/wap/user/deleteDiy",{id:id},function(data){
+			alert(data.msg);
+			if(data.success){
+				location.reload(true);
+			}
+		});
+	}
+}
+</script>
+##}

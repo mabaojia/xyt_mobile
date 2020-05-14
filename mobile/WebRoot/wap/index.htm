@@ -1,0 +1,106 @@
+##tlayout("wap/layout.htm",{head_title:shop.title}){
+
+<div class="swiper-container banner">
+	<div class="swiper-wrapper">
+		##for(_item in carousel_list!){
+			<div class="swiper-slide">
+		    	<a href="${_item.url!}"><img src="${_item.img_url!}" /></a>
+		    </div>
+		##}
+	</div>
+	<div class="swiper-pagination"></div>
+</div>
+<div class="notice_list">
+	<div class="platform_Notice">
+		<a href="/wap/noticeList" class="title"><div class="title">商家公告：</div></a>
+		<div class="platform_Notice_txt">
+			<div class="Notice_txt_1">
+				<div class="swiper-wrapper">
+					##for(_item in notice_list!){
+						<div class="swiper-slide"><span class="swiper_Notice_txt"><a href="/wap/notice?id=${_item.id!}">${_item.title!}</a></span></div>
+					##}
+				</div>
+			</div>
+		</div>
+		<a href="/wap/noticeList" class="more_link"><span>更多 >></span></a>
+	</div>
+</div>
+<div class="course_content_w">
+	<div class="classify_print_type">
+		<!-- 
+		<div class="classify_print_card">
+			<div class="classify_print_card_a">
+				<a href="/wap/brand?type=1"><img src="/wap/images/xiaobai_2.png" /></a>
+			</div>
+			<div class="classify_print_card_a">
+				<a href="/wap/brand?type=2"><img src="/wap/images/xiaobai_1.png" /></a>
+			</div>
+			<div class="classify_print_card_a">
+				<a href="/wap/photo?source=3"><img src="/wap/images/xiaobai.png" /></a>
+			</div>
+		</div>
+		<div class="classify_print_card">
+			<div class="classify_print_card_a">
+				<a href="/wap/brand?type=3"><img src="/wap/images/xiaobai_3.png" /></a>
+			</div>
+			<div class="classify_print_card_a">
+				<a href="/wap/brand?type=4"><img src="/wap/images/xiaobai_5.png" /></a>
+			</div>
+			<div class="classify_print_card_a">
+				<a href="/wap/brand?type=5"><img src="/wap/images/xiaobai_4.png" /></a>
+			</div>
+		</div>
+		 -->
+		<div class="print_min_menu">
+			##for(_item in type_list!){
+				<div class="print_min_menu_a">
+					<div class="print_min_menu_img">
+						<a href="/wap/list?tid=${_item.id!}"><img src="${_item.img_url!}" /></a>
+					</div>
+					<div><a href="/wap/list?tid=${_item.id!}">${_item.title!}</a></div>
+				</div>
+			##}
+		</div>
+	</div>
+	##for(_item in top_list!){
+		<div class="Boutique_special">
+			<div class="boutique_content">
+				<div class="boutique_content_txt">${_item.title!}</div>
+				<div class="boutique_content_more"><a href="/wap/list?tid=${_item.id!}">更多 >></a></div>
+			</div>
+			<div style="padding-bottom: 3vw;"><a href="/wap/list?tid=${_item.id!}"><img src="${_item.top_img_url!}" style="width: 100%;" /></a></div>
+			<div class="boutique_content_w">
+				##for(_each in _item.goods_list!){
+					<div class="boutique_content_photo">
+						<div class="boutique_list_photo">
+							<a href="/wap/goods?code=${_each.code!}"><img src="${_each.img_url!}" /></a>
+						</div>
+						<div class="boutique_list_photo_txt">
+							<a href="/wap/goods?code=${_each.code!}">${_each.title!}</a>
+						</div>
+					</div>
+				##}
+			</div>
+		</div>
+	##}
+</div>
+<script src="/wap/lib/swiper/swiper.min.js"></script>
+<script>
+var swiper = new Swiper('.swiper-container', {
+	pagination: {
+		el: '.swiper-pagination',
+	},
+	autoplay: {
+		delay: 3000,
+	}
+});
+var Noticeswiper = new Swiper('.platform_Notice_txt .Notice_txt_1', {
+	
+	direction: 'vertical',
+	loop: true,
+	autoplay: {
+		delay: 3000,
+	},
+});
+</script>
+##}

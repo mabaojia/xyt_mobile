@@ -1,0 +1,112 @@
+##tlayout("shop/layout.htm"){
+
+<div class="breadcrumbs">
+	##if(type==1){
+		<div class="col-xs-12 breadcrumbs_title">机型模板</div>
+	##}else if(type==2){
+		<div class="col-xs-12 breadcrumbs_title">服装模板</div>
+	##}else if(type==3){
+		<div class="col-xs-12 breadcrumbs_title">雕刻模板</div>
+	##}else if(type==4){
+		<div class="col-xs-12 breadcrumbs_title">礼品模板</div>
+	##}
+</div>
+<div class="page-content">
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="table-responsive">
+				<table class="table table-striped table-bordered table-hover">
+					<thead>
+						<tr>
+							<th style="width: 25px;"><input type="checkbox" id="checkAll" /></th>
+							<th>标题</th>
+							<th>排序</th>
+							<th style="width: 60%;">下级管理</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody id="checklist">
+						##for(_item in list!){
+						<tr>
+							<td><input type="checkbox" name="bids" value="${_item.id!}" /></td>
+							<td>${_item.title!}</td>
+							<td>${_item.idx!}</td>
+							<td>
+								##for(_each in _item.brand_list!){
+									<div style="height: 25px;line-height: 25px;width: 25%;float: left;">
+										${_each.title!}
+										##if(_each.status==1){
+											<span style="margin-left: 5px;">√</span>
+										##}else{
+											<span style="margin-left: 5px;">×</span>
+										##}
+									</div>
+								##}
+							</td>
+							<td style="width:100px;">
+								<div class="btn-group">
+									<button class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown">
+										操作<span class="icon-caret-down icon-on-right"></span>
+									</button>
+									<ul class="dropdown-menu dropdown-info pull-right">
+										<li><a href="/shop/brand/store/list_1?id=${_item.id!}&type=${_item.type!}">下级管理</a></li>
+										<li><a href="javascript:saveBrand(${_item.id!}, ${_item.type!})">选取</a></li>
+									</ul>
+								</div>
+							</td>
+						</tr>
+						##}
+						<tr>
+							<td></td>
+							<td colspan="4"><a href="javascript:saveBrands(${type!})">全部选取</a></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+function saveBrand(id, type){
+	
+	if(confirm("确定要选取该条记录吗？")){
+		$.post("/shop/brand/store/saveBrand",{id:id, type:type},function(data){
+			alert(data.msg);
+			if(data.success){
+				window.location.href="/shop/brand?type=${type!}";
+			}
+		});
+	}
+}
+$(function(){
+	
+	/*全选/取消*/
+	$("#checkAll").click(function(){
+		if($(this).is(':checked')){
+			$("#checklist").find('input').each(function(){
+				$(this).prop("checked", true);
+			});
+		}else{
+			$("#checklist").find('input').each(function(){
+				$(this).prop("checked", false);
+			});
+		}
+	});
+});
+function saveBrands(type){
+	
+	var bids=",";
+	$("#checklist").find('input').each(function(){
+		if($(this).prop("checked")){
+			bids+=$(this).val() + ",";
+		}
+	});
+	$.post("/shop/brand/store/saveBrands", {bids:bids, type:type}, function(data){
+		alert(data.msg);
+		if(data.success){
+			window.location.href="/shop/brand?type=${type!}";
+		}
+	});
+}
+</script>
+##}

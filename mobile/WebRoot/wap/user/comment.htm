@@ -1,0 +1,62 @@
+##tlayout("wap/layout.htm",{head_title:"商品评价"}){
+
+<!-- 文件上传所需要css和js -->
+<link rel="stylesheet" href="/wap/js/FileUpload/css/jquery.fileupload.css">
+<script type="text/javascript" src="/wap/js/FileUpload/jquery.iframe-transport.js"></script>
+<script type="text/javascript" src="/wap/js/FileUpload/vendor/jquery.ui.widget.js"></script>
+<script type="text/javascript" src="/wap/js/FileUpload/jquery.fileupload.js"></script>
+
+<div class="weui-cells weui-cells_form" style="margin-top: 0;">
+	<form action="/wap/user/saveComment" method="post" id="submit_form">
+		<div class="weui-cell">
+			<div class="weui-cell__bd">
+				<textarea class="weui-textarea" placeholder="评论内容" rows="3" name="content"></textarea>
+			</div>
+		</div>
+	    <div class="weui-cell">
+	        <div class="weui-cell__bd">
+				<div class="weui-uploader">
+	                <div class="weui-uploader__bd">
+	                    <ul class="weui-uploader__files" id="img_urls"></ul>
+						<div class="weui-uploader__input-box">
+							<input class="weui-uploader__input" type="file" name="image" id="uploadImg" />
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<input type="hidden" name="img_urls" value="," />
+	    <input type="hidden" name="gid" value="${gid!}" />
+	    <input type="hidden" name="code" value="${code!}" />
+	</form>
+</div>
+<div class="weui-btn-area">
+	<a href="javascript:void(0);" class="weui-btn weui-btn_primary" onclick="submitForm()">保存</a>
+</div>
+<script>
+$('#uploadImg').fileupload({
+    url: '/wap/uploadImg',
+    dataType: 'json',
+    done: function (e,data) { 
+    	var json = $.parseJSON(data.jqXHR.responseText); 
+    	if(json.success){
+    		$("#img_urls").append("<li class='weui-uploader__file' style='background-image:url(" + json.img_url + ")'></li>");
+    		$("input[name='img_urls']").val($("input[name='img_urls']").val() + json.img_url + ",");
+        }else{
+        	alert(json.msg);
+        }
+    }
+});
+function submitForm(){
+	
+	$('#submit_form').ajaxSubmit({
+	    success: function(data){
+	    	alert(data.msg);
+	    	if(data.success){
+	    		window.location.href="/wap/user/ordersMsg?code=${code!}";
+	    	}
+	    }
+	});
+}
+</script>
+##}

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1" />
+	<title>${_common.baseTitle()}商家端v6.0</title>
+	<link href="/shop/assets/css/bootstrap.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="/shop/assets/css/font-awesome.min.css" />
+	<link rel="stylesheet" href="/shop/assets/css/ace.min.css" />
+	<link rel="stylesheet" href="/shop/assets/css/ace-rtl.min.css" />
+	<link rel="stylesheet" href="/shop/assets/css/ace-skins.min.css" />
+	<link rel="stylesheet" href="/shop/css/fonts.css"/>
+	<link rel="stylesheet" href="/shop/css/style.css" />
+	<link rel="stylesheet" href="/shop/css/icon.css"/>
+	<script src="/shop/script/jquery.min.js"></script>
+	<script src="/shop/script/jquery.form.js"></script>
+	<script src="/shop/assets/js/ace-extra.min.js"></script>
+	<script src="/shop/assets/js/bootstrap.min.js"></script>
+	<script src="/shop/assets/js/typeahead-bs2.min.js"></script>
+	<script src="/shop/assets/js/ace-elements.min.js"></script>
+	<script src="/shop/assets/js/ace.min.js"></script>
+	<script src="/shop/script/fontfaceobserver.js"></script>
+	<style type="text/css">
+	.breadcrumbs{
+		padding-left:10px;
+		padding-top:10px;
+		height: 50px;
+	}
+	.breadcrumbs div{
+		height: 30px;
+		line-height: 30px;
+	}
+	.breadcrumbs select{
+		height: 35px;
+		line-height: 35px;
+		vertical-align: top;
+		width: 150px;
+	}
+	</style>
+</head>
+<body>
+	<div class="navbar navbar-default" id="navbar">
+		<div class="navbar-container" id="navbar-container">
+			<div class="navbar-header pull-left">
+				<a href="/shop/dashboard" class="navbar-brand"><small><i class="icon-home"></i><span style="margin-left: 10px;">${_common.baseTitle()}商家端v6.0</span></small></a>
+			</div>
+			<div class="navbar-header pull-right" role="navigation">
+				<ul class="nav ace-nav">
+					<li class="light-blue" style="margin-left: 10px;">
+						<a href="/shop/layout" class="dropdown-toggle">退出</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="main-container" id="main-container">
+		<div class="main-container-inner">
+			<a class="menu-toggler" id="menu-toggler" href="javascript:void(0)">
+				<span class="menu-text"></span>
+			</a>
+			<div class="sidebar" id="sidebar">
+				<ul class="nav nav-list">
+					<li style="margin-bottom: 5px;">
+						<a href="/shop/dashboard">
+							<i class="icon-time"></i>
+							<span class="menu-text">
+								数据统计
+							</span>
+						</a>
+					</li>
+					##for(_menu in shop_menus){
+						<li style="margin-bottom: 5px;">
+							<a href="${_menu.url!}">
+								<i class="${_menu.icon!}"></i>
+								<span class="menu-text">
+									${_menu.title!}
+								</span>
+							</a>
+						</li>
+					##}
+					##if(shop_admin.type==2){
+						<li style="margin-bottom: 5px;">
+							<a href="javascript:showAlert('/shop/system/editMsg')">
+								<i class="icon-copy"></i>
+								<span class="menu-text">
+									账号设置
+								</span>
+							</a>
+						</li>
+						<li style="margin-bottom: 5px;">
+							<a href="/shop/root">
+								<i class="icon-home"></i>
+								<span class="menu-text">
+									员工管理
+								</span>
+							</a>
+						</li>
+						<li style="margin-bottom: 5px;">
+							<a href="javascript:showAlert('/shop/root/pwd')">
+								<i class="icon-cog"></i>
+								<span class="menu-text">
+									支付密码
+								</span>
+							</a>
+						</li>
+					##}
+					<li style="margin-bottom: 5px;">
+						<a href="javascript:showAlert('/shop/system/editPwd')">
+							<i class="icon-key"></i>
+							<span class="menu-text">
+								账户安全
+							</span>
+						</a>
+					</li>
+				</ul>
+			</div>
+			<div class="main-content">
+				${layoutContent}
+			</div>
+		</div>
+	</div>
+	<div class="tanchu_bg" id="tanchu_bg">
+		<iframe id="tanchu_ifream" src="/shop/blank" scrolling="no" allowtransparency="true"></iframe>
+	</div>
+<script>
+$(document).ready(function(){
+	
+	$("#sidebar").find("a").each(function(){
+		if($(this).attr("href")=="${url!}" || $(this).attr("href")=="${url_1!}"){
+			$(this).parent().addClass("active");
+		}
+	});
+	if("${url_1!}"=="/shop/type"){
+		$("#sidebar").find("a").each(function(){
+			if($(this).attr("href")=="${url_1!}?type=${type!}"){
+				$(this).parent().addClass("active");
+			}
+		});
+	}
+	if("${url_1!}"=="/shop/brand"){
+		$("#sidebar").find("a").each(function(){
+			if($(this).attr("href")=="/shop/brand?type=${type!}"){
+				$(this).parent().addClass("active");
+			}
+		});
+	}
+	if("${url_1!}"=="/shop/brand/store"){
+		$("#sidebar").find("a").each(function(){
+			if($(this).attr("href")=="/shop/brand/store?type=${type!}"){
+				$(this).parent().addClass("active");
+			}
+		});
+	}
+	if("${url_1!}"=="/shop/material" || ("${url_1!}"=="/shop/type" && "${type!}"==1) || "${url_1!}"=="/shop/material/store"){
+		$("#sidebar").find("a").each(function(){
+			if($(this).attr("href")=="/shop/material"){
+				$(this).parent().addClass("active");
+			}
+		});
+	}
+	if("${url_1!}"=="/shop/background" || ("${url_1!}"=="/shop/type" && "${type!}"==2) || "${url_1!}"=="/shop/background/store"){
+		$("#sidebar").find("a").each(function(){
+			if($(this).attr("href")=="/shop/background"){
+				$(this).parent().addClass("active");
+			}
+		});
+	}
+	if("${url_1!}"=="/shop/mask" || ("${url_1!}"=="/shop/type" && "${type!}"==5) || "${url_1!}"=="/shop/mask/store"){
+		$("#sidebar").find("a").each(function(){
+			if($(this).attr("href")=="/shop/mask"){
+				$(this).parent().addClass("active");
+			}
+		});
+	}
+});
+function hideAlert(){
+	
+	$("#tanchu_bg").hide();
+	$("#tanchu_ifream").attr("src","/shop/blank");
+}
+function showAlert(url){
+	
+	$("#tanchu_ifream").attr("src",url);
+	$("#tanchu_bg").show();
+}
+//键盘回车事件
+document.onkeydown=function(event){
+	if(event.keyCode==13){
+		return false;
+    }
+}
+</script>
+</body>
+</html>

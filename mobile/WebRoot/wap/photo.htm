@@ -1,0 +1,46 @@
+##tlayout("wap/layout.htm",{head_title:"商品列表"}){
+
+<div class="screen_hurdle">
+	##if(!exist("oby") || oby==3){
+		<div class="screen_li"><span class="select"><a href="/wap/photo?oby=3&tid=${tid!}&source=${source!}&content=${content!}">新品</a></span></div>
+	##}else{
+		<div class="screen_li"><span><a href="/wap/photo?oby=3&tid=${tid!}&source=${source!}&content=${content!}">新品</a></span></div>
+	##}
+	##if(exist("oby") && oby==1){
+		<div class="screen_li"><span class="select"><a href="/wap/photo?oby=1&tid=${tid!}&source=${source!}&content=${content!}">销量</a></span></div>
+	##}else{
+		<div class="screen_li"><span><a href="/wap/photo?oby=1&tid=${tid!}&source=${source!}&content=${content!}">销量</a></span></div>
+	##}
+	##if(exist("oby") && oby==2){
+		<div class="screen_li"><span class="select"><a href="/wap/photo?oby=2&tid=${tid!}&source=${source!}&content=${content!}">价格</a></span></div>
+	##}else{
+		<div class="screen_li"><span><a href="/wap/photo?oby=2&tid=${tid!}&source=${source!}&content=${content!}">价格</a></span></div>
+	##}
+</div>
+<div style="height: 45px;"></div>
+<div class="content_list_w no">
+	<div class="content_list">
+		##for(_item in results.list!){
+			<div class="content_photo_li_z">
+				<div class="photo">
+					<a href="/wap/goods?code=${_item.code!}"><img src="${_item.img_url!}" /></a>
+				</div>
+				<div class="photograph_size_w">
+					<div class="photograph_size">
+						<a href="/wap/goods?code=${_item.code!}">${_item.title!}</a>
+					</div>
+					<div class="price">￥${_item.price!}</div>
+					<div class="text">尺寸：${_item.width!}mm * ${_item.height!}mm</div>
+				</div>
+			</div>
+		##}
+	</div>
+</div>
+##if(totalPage>1){
+	<div class="fenye">
+		<#_page page="${results!}" params="tid,source,content,oby">
+			<ul id="Pagination"></ul>
+		</#_page>
+	</div>
+##}
+##}

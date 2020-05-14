@@ -1,0 +1,67 @@
+##tlayout("wap/layout.htm",{head_title:"商品列表"}){
+
+##if(shop.shop==1){
+	<div class="screen_hurdle">
+		##if(!exist("oby") || oby==3){
+			<div class="screen_li"><span class="select"><a href="/wap/list?oby=3&tid=${tid!}&source=${source!}&content=${content!}">新品</a></span></div>
+		##}else{
+			<div class="screen_li"><span><a href="/wap/list?oby=3&tid=${tid!}&source=${source!}&content=${content!}">新品</a></span></div>
+		##}
+		##if(exist("oby") && oby==1){
+			<div class="screen_li"><span class="select"><a href="/wap/list?oby=1&tid=${tid!}&source=${source!}&content=${content!}">销量</a></span></div>
+		##}else{
+			<div class="screen_li"><span><a href="/wap/list?oby=1&tid=${tid!}&source=${source!}&content=${content!}">销量</a></span></div>
+		##}
+		##if(exist("oby") && oby==2){
+			<div class="screen_li"><span class="select"><a href="/wap/list?oby=2&tid=${tid!}&source=${source!}&content=${content!}">价格</a></span></div>
+		##}else{
+			<div class="screen_li"><span><a href="/wap/list?oby=2&tid=${tid!}&source=${source!}&content=${content!}">价格</a></span></div>
+		##}
+	</div>
+	<div style="height: 45px;"></div>
+	<div class="commodity_list_all">
+		##for(_item in results.list!){
+			<div class="commodity_list_all_li">
+				<div class="list_li_master_map">
+					<a href="/wap/goods?code=${_item.code!}"><img src="${_item.img_url!}" /></a>
+				</div>
+				<div class="li_txt_master_map">
+					<div class="name"><a href="/wap/goods?code=${_item.code!}">${_item.title!}</a></div>
+					<div class="li_txt_master_minute">
+						<div><span class="li_txt_price">￥<span>${_item.price!}</span></span></div>
+						<div>
+							##for(_each in _item.labels_list!){
+								<span class="min_texture">${_each!}</span>
+							##}
+						</div>
+					</div>
+					<div class="li_txt_master_bottom">
+						<span class="delete_price">已售：${_item.sale_number!}</span>
+					</div>
+				</div>
+				<div class="commodity_list_all_li_flex">
+					<a href="/wap/goods?code=${_item.code!}" class="li_fle_item cur mr10">购买</a>
+					##if(_item.source!=3 && _item.exist_diy==1){
+						<a href="/wap/diy/index?diyId=${_item.diy.id!}&type=${_item.diy.type!}" class="li_fle_item">定制</a>
+					##}
+				</div>
+			</div>
+		##}
+	</div>
+##}else{
+	<div class="empty-list">
+		<img src="/wap/images/shoujitu_03.png" class="img_kong" />
+	     <h2>商城等待开通</h2>
+	     <div class="go-homepage-btn">
+	         <a href="/wap">去逛逛</a>
+	     </div>
+	</div>
+##}
+##if(totalPage>1){
+	<div class="fenye">
+		<#_page page="${results!}" params="tid,source,content,oby">
+			<ul id="Pagination"></ul>
+		</#_page>
+	</div>
+##}
+##}

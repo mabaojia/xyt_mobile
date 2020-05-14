@@ -1,0 +1,130 @@
+##tlayout("wap/layout.htm",{head_title:"我的订单"}){
+
+<img src="/wap/images/detail_top_icon.png" class="detail_header_img fix" />
+<div class="tab_nav cap-coupon top10">
+    <div class="tab_list">
+    	##if(exist("status")){
+			<a href="/wap/user/orders" class="tab_item">全部</a>
+			##if(status==0){
+				<a href="/wap/user/orders?status=0" class="tab_item cur">待付款</a>
+			##}else{
+				<a href="/wap/user/orders?status=0" class="tab_item">待付款</a>
+			##}
+	        ##if(status==1){
+				<a href="/wap/user/orders?status=1" class="tab_item cur">待发货</a>
+			##}else{
+				<a href="/wap/user/orders?status=1" class="tab_item">待发货</a>
+			##}
+	        ##if(status==2){
+				<a href="/wap/user/orders?status=2" class="tab_item cur">已发货</a>
+			##}else{
+				<a href="/wap/user/orders?status=2" class="tab_item">已发货</a>
+			##}
+	        ##if(status==8){
+				<a href="/wap/user/orders?status=8" class="tab_item cur">已收货</a>	
+			##}else{
+				<a href="/wap/user/orders?status=8" class="tab_item">已收货</a>
+			##}
+    	##}else{
+			<a href="/wap/user/orders" class="tab_item cur">全部</a>
+	        <a href="/wap/user/orders?status=0" class="tab_item">待付款</a>
+	        <a href="/wap/user/orders?status=1" class="tab_item">待发货</a>
+	        <a href="/wap/user/orders?status=2" class="tab_item">已发货</a>
+	        <a href="/wap/user/orders?status=8" class="tab_item">已收货</a>
+    	##}
+    </div>
+</div>
+<div style="height: 25px;"></div>
+<div class="page">
+    ##for(_item in results.list!){
+	   	<a href="/wap/user/ordersMsg?code=${_item.code!}" class="order_list_item">
+	        <div class="js-goods-list-container">
+	            <div class="js-header header">
+	                <span>订单号：${_item.code!}</span>
+	                <span class="colorRed">
+	                	##if(_item.closed==1){
+							已关闭
+						##}else{
+							##if(_item.status==0){
+								待付款
+							##}else if(_item.status==1){
+								##if(_item.tracking==1){
+									待发货
+								##}else{
+									待自提
+								##}
+							##}else if(_item.status==2){
+								已发货
+							##}else if(_item.status==3){
+								已完成
+							##}else if(_item.status==8){
+								已收货
+							##}
+						##}
+	                </span>
+	            </div>
+	            <div class="js-goods-list">
+	                ##for(_each in _item.goods_list!){
+	                	<div class="js-goods-item order-goods-item clearfix block-list">
+		                    <div class="name-card name-card-goods clearfix">
+		                        <div class="thumb">
+		                        	##if(_each.diy_id!=null && _each.diy_id!=""){
+		                        		<img class="js-view-image" src="${_each.goods_img_url!}" />
+		                        	##}else{
+		                        		<img class="js-view-image" src="${_each.goods_img_url!}" />
+		                        	##}
+		                        </div>
+		                        <div class="detail">
+		                            <div class="clearfix detail-row">
+		                                <div class="right-col text-right">
+		                                    <div class="price">¥<span>${_each.item_price!}</span></div>
+		                                </div>
+		                                <div class="left-col">
+		                                	##if(_each.diy_id!=null && _each.diy_id!=""){
+				                        		<h3 class="l2-ellipsis">${_each.goods_title!}</h3>
+				                        	##}else{
+				                        		<h3 class="l2-ellipsis">${_each.goods_title!}</h3>
+				                        	##}
+		                                </div>
+		                            </div>
+		                            <div class="clearfix detail-row">
+		                                <div class="right-col">
+		                                    <div class="num c-gray-darker">* ${_each.item_number!}</div>
+		                                </div>
+		                                <div class="left-col">
+		                                    <p class="c-gray-darker sku">
+		                                    	【${_each.goods_format_title!}】
+		                                    	##if(_each.diy_id!=null && _each.diy_id!=""){
+		                                    		【定制商品】
+		                                    	##}
+		                                    	##if(_each.goods_source==1 || _each.goods_source==2){
+		                                    		【${_each.parent.title!}->${_each.brand.title!}】
+		                                    	##}
+		                                    </p>
+		                                </div>
+		                            </div>
+		                        </div>
+		                    </div>
+		                </div>
+	                ##}
+	            </div>
+	            <div class="weui-cells js-total">
+	                <div class="weui-cell">
+	                    <div class="weui-cell__bd">
+	                        <p>总计</p>
+	                    </div>
+	                    <div class="weui-cell__ft colorRed">￥${_item.grand_total!}</div>
+	                </div>
+	            </div>
+	        </div>
+	    </a>
+    ##}
+    ##if(totalPage>1){
+		<div class="fenye">
+			<#_page page="${results!}" params="status">
+				<ul id="Pagination"></ul>
+			</#_page>
+		</div>
+	##}
+</div>
+##}

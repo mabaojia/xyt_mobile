@@ -1,0 +1,31 @@
+#数据库地址
+jdbcUrl = jdbc:mysql://127.0.0.1/mobile?useUnicode=true&characterEncoding=UTF-8
+#数据库账号
+user = 123456
+#数据库密码
+password = 123456
+
+#基础地址
+wxUrl = http://www.diy135.com
+
+#项目名称
+baseTitle = 个性定制平台系统
+
+#公众号信息
+appid = 123456
+appsecret = 123456
+token = 123456
+partner = 123456
+partnerkey = 123456
+partnerlicense = 123456
+
+#阿里云物流查询接口
+#https://market.aliyun.com/products/56928004/cmapi023201.html
+appCode = 89852341f293434e862aeb017d842b86
+
+#阿里云OSS
+ossEndpoint = 123456
+ossAccessKeyId = 123456
+ossAccessKeySecret = 123456
+ossBucket = 123456
+ossDomain = 123456
