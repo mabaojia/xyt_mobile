@@ -34,4 +34,4 @@ ossDomain = 123456
 upyunBuketName = xyt-upyun
 upyunOperatorName = xinyitie
 upyunOperatorPwd = RxRcSp8Jg1CZptLv9pi607Wjs4fkuRnA
-upyunImageUrl = http://xyt-upyun.test.upcdn.net/
+upyunImageUrl = http://rc.diy135.com/
