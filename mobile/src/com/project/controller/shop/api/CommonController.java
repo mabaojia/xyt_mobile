@@ -78,6 +78,7 @@ public class CommonController extends BaseController{
 	    
 	    try {
         	String fwqImgagepath = getRequest().getSession().getServletContext().getRealPath("/") + path;
+        	String base64Image = UploadImageUpyun.changeImageTobase64(fwqImgagepath);
         	String imagePath = UploadImageUpyun.testWriteFile(fwqImgagepath, type.replace("image/", ""));
         	rename_file.delete();
 	        if(imagePath.equals("")){
@@ -88,6 +89,7 @@ public class CommonController extends BaseController{
 	        }else{
 	        	setAttr("success", true);
 				setAttr("img_url", imagePath);
+				setAttr("base64Image", base64Image);
 				renderJson();
 				return;
 	        }
